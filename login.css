@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+
+*{
+    font-family: "DM Sans", sans-serif;
+
+}
+
+body {
+    margin: 0;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .login-card {
+    background-color: #000;
+    width: 350px;
+    height: 360px;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+    text-align: center;
+  }
+  
+  .logo {
+    width: 40px;
+    height: 40px;
+    background-color: #d3d3d3;
+    margin: 0 auto 20px;
+    clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  }
+
+  form{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  
+  
+  .input-field {
+    width: calc(80% - 20px);
+    margin: 10px auto;
+    padding: 10px;
+    border: none;
+    border-radius: 30px;
+    background-color: #e6e6e6;
+    text-align: center;
+    font-size: 16px;
+    border: none;
+    outline: none;
+  }
+  
+  .input-field::placeholder {
+    color: #666;
+  }
+  
+  .show-password {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    font-size: 14px;
+    color: #fff;
+    
+  }
+  
+  .show-password input {
+    margin-right: 5px;
+    cursor: pointer;
+  }
+
+  .show-password label{
+    cursor: pointer;
+  }
+  
+  .login-button {
+    width: 70%;
+    padding: 10px;
+    border: none;
+    border-radius: 30px;
+    background-color: #444;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 50px;
+    transition: all .3s;
+  }
+  
+  .login-button:hover {
+    background-color: #333;
+  }
+  
+  

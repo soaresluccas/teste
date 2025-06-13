@@ -1,0 +1,66 @@
+.conteudo h1{
+    text-align: center;
+}
+
+.config-container {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    margin-top: 50px;
+  }
+  
+  .config-menu {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .config-tab {
+    padding: 10px 20px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    text-align: left;
+    border-radius: 10px;
+    text-align: center;
+  }
+  
+  .config-tab.active {
+    background-color: #555555;
+    color: white;
+    font-weight: bold;
+  }
+  
+  .config-content {
+    flex: 3;
+    border: 1px solid #ddd;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+  }
+  
+  .config-section {
+    display: none;
+  }
+
+  .config-section h2{
+    margin-bottom: 30px;
+    border-bottom: solid 2px #555555;
+    text-align: center;
+  }
+  
+  .config-section.active {
+    display: block;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  

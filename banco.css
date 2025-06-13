@@ -1,0 +1,111 @@
+.conteudo {
+    flex: 1;
+    padding: 20px;
+    text-align: center;
+    
+}
+
+.conteudo h1 {
+    margin-bottom: 20px;
+}
+
+.tabela-container {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    max-height: 400px; 
+    overflow-y: auto;  
+    width: 100%;  
+}
+
+.tabela-container h3{
+    text-align: left;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+th, td {
+    border: 1px solid #ddd !important;
+    padding: 10px;
+    text-align: center !important;
+}
+
+th {
+    background-color: #333;
+    color: #fff;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.btn_del{
+    background-color: red;
+    padding: 5px;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 20px;
+    margin-right: 20px;
+    transition: all .3s;
+    border: none;
+    cursor: pointer;
+}
+
+.btn_ed{
+    background-color: #007bff;
+    padding: 5px;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 20px; 
+    transition: all .3s;
+    border: none;
+    cursor: pointer;
+}
+
+.btn_del:hover {
+    background-color: rgb(164, 0, 0); 
+}
+
+.btn_ed:hover{
+    background-color: #0058b6;
+}
+
+
+
+.acao{
+    background-color: #424242;
+    padding: 8px;
+    border-radius: 5px;
+    color: #fff;
+    transition: all .3s;
+}
+
+.acao:hover{
+    background-color: #1f1f1f; 
+}
+
+.form_dbs{
+    display: flex;
+}
+
+.dbname{
+    border: none;
+    outline: none;
+    background: transparent;
+    cursor: pointer;
+    text-transform: uppercase;
+    margin-left: 5rem;
+}
+
+.form_acao{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}

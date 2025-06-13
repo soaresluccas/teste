@@ -1,0 +1,62 @@
+#create-db-form{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f9f9f9;
+    padding: 50px;
+    margin-top: 50px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.create-table-form{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f9f9f9;
+    padding: 50px;
+    margin-top: 50px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+form .form-group{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+form .form-group input{
+    outline: none;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    margin-right: 50px;
+    border: solid 1px #959595;
+}
+
+form .form-group select{
+    outline: none;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    border: solid 1px #959595;
+    margin-right: 10px; 
+}
+
+.columns{
+    overflow-y: auto;  
+    width: 100%;
+}
+
+.columns .column-config{
+    display: flex;
+    gap: 30px;
+    align-items: center;
+   
+}
+
+.hiddens{
+    display: none;
+}

@@ -1,0 +1,57 @@
+.perfil_container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.config_container{
+    width: 100%;
+    padding: 10px;
+    margin-top: 30px;
+    border-radius: 10px;
+   
+    background-color: #f3f1f1;
+}
+
+.config_container .perfil_btn{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    background-color: transparent;
+    transition: all .3s;
+    cursor: pointer;
+}
+
+.config_container .perfil_btn:hover{
+    background-color: #cdcdcd;
+}
+
+.config_container .add_perfil{
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    justify-content: center;    
+    align-items: center;
+}
+
+.config_container .add_perfil a{
+    text-align: center;
+    width: 100%;
+    padding: 10px;
+    background-color: #e7e7e7;
+    transition: all .3s;
+    color: #434343;
+    width: 100%;
+    border-radius: 10px;
+
+}
+
+.config_container .add_perfil a:hover{
+   background-color: #c7c4c4;
+}
