@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tabelas do Banco</title>
+  <link rel="stylesheet" href="../public/estilo/style.css">
+  <link rel="stylesheet" href="../public/estilo/banco.css">
+  <link rel="stylesheet" href="../public/estilo/filtro.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+  <div class="container hidden">
+    <aside class="sidebar">
+      <a href="/colunas" class="menu-btn" data-i18n="menu.voltar">Voltar</a>
+
+      <div class="menu-diamond"></div>
+      <div class="logo_ex">
+        <h1>ÊXODO</h1>
+        <h4>AUTOMAÇÃO</h4>
+      </div>
+      <button class="menu-btn exit-btn" data-i18n="menu.sair">Sair</button>
+      <h2 class="footer_aside">
+        <i class="bi bi-c-circle"></i>
+        <span data-i18n="footer.direitos">Desenvolvido por Lucas Soares</span>
+      </h2>
+    </aside>   
+    <main class="content">
+      <div id="loading" class="loading-container">
+        <div class="loading-circle"></div>
+      </div>
+      <div class="conteudo hidden">
+        <h1 id="tabela-titulo">usuario</h1>  
+        
+        <div class="tabela-container">
+            <table id="tabela">
+                <thead>
+                    <tr>
+                        <% columns.forEach(column => { %>
+                            <th><%= column.Field %></th>
+                        <% }); %>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% dados.forEach(row => { %> <!-- Cada linha da tabela -->
+                    <tr>
+                        <!-- O formulário está atrelado apenas a uma única linha -->
+                        <form id="form-alterar-dados" action="/update-row?table=<%= table %>&banco=<%= banco %>" method="post">
+                            <% columns.forEach(column => { %>
+                            <td>
+                                <% if (column.isPrimary) { %>
+                                    <!-- Chave Primária: Campo de texto desativado + hidden para envio -->
+                                    <input 
+                                        type="text" 
+                                        name="<%= column.Field %>" 
+                                        value="<%= row[column.Field] %>" 
+                                        disabled>
+                                    <input 
+                                        type="hidden" 
+                                        name="<%= column.Field %>" 
+                                        value="<%= row[column.Field] %>">
+                                <% } else { %>
+                                    <!-- Campos editáveis -->
+                                    <input 
+                                        type="text" 
+                                        name="<%= column.Field %>" 
+                                        value="<%= row[column.Field] %>" 
+                                        placeholder="Alterar <%= column.Field %>">
+                                <% } %>
+                            </td>
+                            <% }); %>
+                            <td>
+                                <!-- Botão de ação específico para esta linha -->
+                                <button type="submit" class="btn_ed">Alterar</button>
+                            </td>
+                        </form>
+                    </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+            
+            
+            
+          </div>
+          
+          
+          
+        
+      </div>
+    </main>
+  </div>
+  <div class="footer_body hidden">
+    <i class="bi bi-c-circle"></i>
+    <h1>2024 - Êxodo Automação |</h1>
+    <h1>Desenvolvido por Lucas Soares</h1>
+  </div>
+</body>
+<script src="../public/js/script.js"></script>
+<script src="../public/js/translate.js"></script>
+<script>
+window.addEventListener("load", () => {
+  const container = document.querySelector(".container");
+  const footer_body = document.querySelector(".footer_body");
+
+  
+  setTimeout(() => {
+    container.classList.remove("hidden");
+    footer_body.classList.remove("hidden");
+  }, 500); 
+});
+</script>
+
+</html>

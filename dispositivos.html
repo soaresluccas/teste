@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bancos de dados</title>
+  <link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+  integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+  crossorigin="anonymous"
+/>
+  <link rel="stylesheet" href="../public/estilo/style.css">
+  <link rel="stylesheet" href="../public/estilo/banco.css">
+  <link rel="stylesheet" href="../public/estilo/filtro.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  
+</head>
+<body>
+  <div class="container hidden">
+    <aside class="sidebar">
+        
+      <a href="/bombex/admin" class="menu-btn" data-i18n="menu.voltar">Voltar</a>
+
+      
+      <!-- Decoração lateral -->
+      <div class="menu-diamond"></div>
+      
+      <!-- Logo -->
+      <div class="logo_ex">
+        <h1>ÊXODO</h1>
+        <h4>AUTOMAÇÃO</h4>
+      </div>
+      
+      <!-- Botão de sair -->
+      <a href="/logout" class="menu-btn exit-btn" data-i18n="menu.sair">sair</a>
+      
+      <!-- Rodapé do menu lateral -->
+      <h2 class="footer_aside">
+        <i class="bi bi-c-circle"></i>
+        <span data-i18n="footer.direitos">Desenvolvido por Lucas Soares</span>
+      </h2>
+    </aside>
+    <main class="content">
+      
+      <div id="loading" class="loading-container">
+        <div class="loading-circle"></div>
+      </div>
+
+      <div class="conteudo">
+
+
+
+        <div class="tabela-container">
+          <h1>Lista de Dispositivos</h1>
+          <form method="POST" action="/dispositivos/atualizar-dispositivo">
+          
+            <div class="d-flex justify-content-end mb-2">
+              <button type="submit" id="btnSalvar" class="btn btn-success" disabled style="opacity: 0; pointer-events: none; transition: opacity 0.3s ease;">
+                Salvar
+              </button>
+            </div>
+            
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Condomínio</th>
+                  <th>Painel Cobertura</th>
+                  <th>Painel Térreo</th>
+                  <th>Status</th>
+                  <th>Bloco</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% dispositivos.forEach((dispositivo, index) => { %>
+                  <tr>
+                    <td class=" justify-content-center d-sm-inline-flex w-100"><a href="/dispositivos/<%= dispositivo.id %>" title="Dispositivo <%= dispositivo.id %>" class="p-2 bg-dark text-center" style="border-radius: 5px; color: #fff;"><%= dispositivo.id %></a></td>
+                    <td><%= dispositivo.nome_condominio %></td>
+    
+                    <td><%= dispositivo.nome_painel_cobertura  %></td>
+                    <td><%= dispositivo.nome_painel_terreo  %></td>
+                    <td><%= dispositivo.status %></td>
+                    <td><%= dispositivo.numero_bloco %></td>
+        
+                    <!-- Hidden id para identificar -->
+                    <input type="hidden" name="dispositivos[<%= index %>][id]" value="<%= dispositivo.id %>">
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+ 
+          </form>
+        </div>
+        
+    
+    
+      
+    </main>
+  </div>
+  <div class="footer_body hidden">
+    <i class="bi bi-c-circle"></i>
+    <h1>2024 - Êxodo Automação |</h1>
+    <h1>Desenvolvido por Lucas Soares</h1>
+  </div>
+
+
+</body>
+
+<script>
+  function verificarSelecoes() {
+    const selects = document.querySelectorAll('select[name*="[id_painel_cob]"], select[name*="[id_painel_terr]"]');
+    const btn = document.getElementById('btnSalvar');
+    
+    const algumSelecionado = Array.from(selects).some(select => select.value && select.value !== "");
+
+    if (algumSelecionado) {
+      btn.disabled = false;
+      btn.style.opacity = "1";
+      btn.style.pointerEvents = "auto";
+      btn.style.cursor = "pointer";
+    } else {
+      btn.disabled = true;
+      btn.style.opacity = "0";
+      btn.style.pointerEvents = "none";
+      btn.style.cursor = "default";
+    }
+  }
+
+  // Ativa ao carregar a página e ao mudar qualquer select
+  window.addEventListener("load", verificarSelecoes);
+  document.querySelectorAll('select[name*="[id_painel_cob]"], select[name*="[id_painel_terr]"]').forEach(select => {
+    select.addEventListener("change", verificarSelecoes);
+  });
+</script>
+
+<script src="../public/js/script.js"></script>
+<script src="../public/js/translate.js"></script>
+
+<script>
+window.addEventListener("load", () => {
+  const container = document.querySelector(".container");
+  const footer_body = document.querySelector(".footer_body");
+
+  
+  setTimeout(() => {
+    container.classList.remove("hidden");
+    footer_body.classList.remove("hidden");
+  }, 500); 
+});
+</script>
+
+
+</html>

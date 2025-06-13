@@ -1,0 +1,2306 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bancos de dados</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+  <link rel="stylesheet" href="../public/estilo/style.css">
+  <link rel="stylesheet" href="../public/estilo/banco.css">
+  <link rel="stylesheet" href="../public/estilo/filtro.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    .nav-tabs .nav-link {
+      color: #495057;
+      background-color: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-bottom: none;
+      margin-right: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-tabs .nav-link:hover {
+      background-color: #e9ecef;
+      border-color: #adb5bd;
+    }
+
+    .nav-tabs .nav-link.active {
+      color: #0d6efd;
+      background-color: #fff;
+      border-color: #0d6efd #0d6efd #fff;
+      font-weight: 600;
+    }
+
+    .tab-content {
+      background-color: #fff;
+      border: 1px solid #dee2e6;
+      border-top: 2px solid #0d6efd;
+      border-radius: 0 0 0.375rem 0.375rem;
+      padding: 1.5rem;
+      min-height: 400px;
+    }
+
+    .tank-container {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+
+
+    .status-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+
+    .status-active {
+      background-color: #28a745;
+      animation: pulse 2s infinite;
+    }
+
+    .status-inactive {
+      background-color: #dc3545;
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+      }
+
+      70% {
+        box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+      }
+    }
+
+    .device-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .log-table {
+      font-size: 0.9rem;
+    }
+
+    .log-table th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+      border-top: none;
+    }
+
+    .log-table td {
+      vertical-align: middle;
+    }
+
+    .badge-flag {
+      font-size: 0.8rem;
+    }
+
+    .pump-control {
+      background: #f8f9fa;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked+.slider {
+      background-color: #2196F3;
+    }
+
+    input:checked+.slider:before {
+      transform: translateX(26px);
+    }
+
+    .close-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: transparent;
+      border: none;
+      font-size: 16px;
+      font-weight: bold;
+      color: #555;
+      cursor: pointer;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background-color 0.3s ease;
+
+    }
+
+    .close-button:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+      /* Fundo cinza claro */
+      color: #f9f9f9;
+    }
+
+    .form-card a i {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #333;
+    }
+
+    .form-card {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      width: 400px;
+      height: 600px;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      opacity: 0;
+      transition: transform 0.4s ease, opacity 0.4s ease;
+      overflow-y: auto;
+      width: 800px;
+      flex-direction: row !important;
+    }
+
+    .form-card::-webkit-scrollbar-thumb {
+      background: #888;
+      /* Cor do "thumb" */
+      border-radius: 10px;
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+      /* Sombra interna */
+    }
+
+    .form-card::-webkit-scrollbar {
+      width: 8px;
+      /* Largura do scrollbar */
+    }
+
+    .container_table::-webkit-scrollbar {
+      width: 8px;
+      /* Largura do scrollbar */
+    }
+
+    .form-card.active {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+
+    .form-card h3 {
+      margin-bottom: 15px;
+    }
+
+    .form-card .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-card label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .form-card input,
+    .form-card button {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .form-card button {
+      margin-top: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .form-card button:hover {
+      background-color: #0056b3;
+    }
+
+    .info-card {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      width: 400px;
+      height: 400px;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      opacity: 0;
+      transition: transform 0.4s ease, opacity 0.4s ease;
+      overflow-y: auto;
+    }
+
+    .info-card.active {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+
+    .divisor {
+      border-right: solid 2px #333;
+      margin-right: 50px;
+      margin-left: 50px;
+    }
+
+    .log_erros {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateY(10px);
+      transition: all 0.4s ease;
+      background: #fff;
+      color: #000;
+      padding: 1rem;
+      position: relative;
+      top: -200px;
+      left: -80px;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+      margin-top: 1rem;
+      width: 400px;
+      height: 200px;
+      display: flex;
+      flex-direction: column;
+      margin-left: -60rem;
+    }
+
+
+    .log_erros.show-erro {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateY(0);
+
+    }
+
+    .hd-error-cob i,
+    .hd-error-terr i {
+      color: red;
+    }
+
+    .body-msg-cob,
+    .body-msg-terr {
+      height: 200px;
+    }
+
+    #loading_cob {}
+
+
+    .loader-container {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      margin-left: 50px;
+      margin-top: 40px;
+    }
+
+    .spinner {
+      box-sizing: border-box;
+      width: 80px;
+      height: 80px;
+      border: 6px solid #3498db;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    .checkmark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 40px;
+      height: 20px;
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 0;
+    }
+
+    .checkmark span {
+      display: block;
+      height: 6px;
+      background-color: #2ecc71;
+      position: absolute;
+      border-radius: 2px;
+      transform-origin: left center;
+    }
+
+    .checkmark .check1 {
+      width: 17px;
+      transform: rotate(45deg);
+      left: 8px;
+      top: 6px;
+    }
+
+    .checkmark .check2 {
+      width: 24px;
+      transform: rotate(-45deg);
+      left: 17px;
+      top: 17px;
+    }
+
+    .show-check {
+      animation: showCheck 0.6s ease forwards;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes showCheck {
+      0% {
+        transform: translate(-50%, -50%) scale(0.5);
+        opacity: 0;
+      }
+
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+      }
+    }
+
+
+    .tank-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    /* === TANK === */
+    .tank {
+      position: relative;
+      width: 280px;
+      height: 320px;
+      background: #b0bec5;
+      border: 14px solid #333;
+      border-radius: 40px;
+      overflow: hidden;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .tank::before {
+      content: "";
+      position: absolute;
+      width: 60px;
+      height: 20px;
+      background: #333;
+      top: -28px;
+      left: calc(50% - 30px);
+      border-radius: 6px;
+    }
+
+    .tank::after {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: #03a9f4;
+      top: -40px;
+      left: calc(50% - 10px);
+      border-radius: 4px;
+      border: 5px solid #333;
+    }
+
+    /* === Água === */
+    .water {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 0%;
+      background: linear-gradient(to top, #4fc3f7 80%, #81d4fa);
+      /* Removida a transition aqui para evitar conflitos */
+      overflow: hidden;
+    }
+
+    /* Classe específica para animação suave */
+    .water.animate {
+      transition: height 1s ease;
+    }
+
+    .wave {
+      position: absolute;
+      bottom: 0;
+      left: -50%;
+      width: 200%;
+      height: 100%;
+      background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.3) 20%, transparent 70%) repeat-x;
+      background-size: 50% 100%;
+      animation: wave 4s linear infinite;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    @keyframes wave {
+      0% {
+        transform: translateX(0);
+      }
+
+      100% {
+        transform: translateX(50%);
+      }
+    }
+
+    .reflection {
+      position: absolute;
+      bottom: 40%;
+      left: 10%;
+      width: 80%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      filter: blur(2px);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* === Barra de Nível === */
+    .level-bar {
+      width: 60px;
+      height: 320px;
+      border: 4px solid #333;
+      border-radius: 20px;
+      background-color: #e0e0e0;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .level-indicator {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: linear-gradient(to top, #4fc3f7, #81d4fa);
+      border-radius: 16px;
+      transition: height 1s ease;
+      z-index: 0;
+    }
+
+    .level-value {
+      z-index: 1;
+    }
+  </style>
+</head>
+
+<body data-dispositivo-id="<%= dispositivo.id %>">
+  <div class="container hidden">
+    <aside class="sidebar">
+      <a href="/dispositivos" class="menu-btn" data-i18n="menu.voltar">Voltar</a>
+      <div class="menu-diamond"></div>
+      <div class="logo_ex">
+        <h1>ÊXODO</h1>
+        <h4>AUTOMAÇÃO</h4>
+      </div>
+      <a href="/logout" class="menu-btn exit-btn" data-i18n="menu.sair">sair</a>
+      <h2 class="footer_aside">
+        <i class="bi bi-c-circle"></i>
+        <span data-i18n="footer.direitos">Desenvolvido por Lucas Soares</span>
+      </h2>
+    </aside>
+    <main class="content">
+
+
+
+      <h1>Dispositivo: <%= dispositivo.id %>
+          Status: <%= dispositivo.status_descricao %>
+      </h1>
+
+
+
+
+
+      <form method="POST" action="/dispositivos/atualizar-dispositivo">
+        <input type="hidden" name="dispositivo_id" value="<%= dispositivo.id %>">
+
+        <% if (!dispositivo.id_painel_cob) { %>
+          <div class="mb-3">
+            <label for="painelCob" class="form-label">Painel Cobertura</label>
+            <select name="id_painel_cob" id="painelCob" class="form-select">
+              <option value="">Selecione</option>
+              <% painelCoberturaGeral.forEach(painel=> { %>
+                <option value="<%= painel.id %>">
+                  <%= painel.nome %>
+                </option>
+                <% }); %>
+            </select>
+          </div>
+          <% } else { %>
+            <div class="mb-3 d-flex justify-content-between align-items-center">
+              <span>
+                <%= dispositivo.nome_painel_cobertura || dispositivo.id_painel_cob %>
+              </span>
+              <%if(dispositivo.id_status===1){%>
+                <button type="submit" name="remover" value="cob-<%= dispositivo.id %>" class="btn btn-sm btn-danger">
+                  Remover
+                </button>
+                <% } %>
+
+            </div>
+            <% } %>
+
+              <% if (!dispositivo.id_painel_terr) { %>
+                <div class="mb-3">
+                  <label for="painelTerr" class="form-label">Painel Térreo</label>
+                  <select name="id_painel_terr" id="painelTerr" class="form-select">
+                    <option value="">Selecione</option>
+                    <% painelTerreoGeral.forEach(painel=> { %>
+                      <option value="<%= painel.id %>">
+                        <%= painel.nome %>
+                      </option>
+                      <% }); %>
+                  </select>
+                </div>
+                <% } else { %>
+                  <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <span>
+                      <%= dispositivo.nome_painel_terreo || dispositivo.id_painel_terr %>
+                    </span>
+                    <%if(dispositivo.id_status===1){%>
+                      <button type="submit" name="remover" value="terr-<%= dispositivo.id %>"
+                        class="btn btn-sm btn-danger">
+                        Remover
+                      </button>
+                      <% } %>
+                  </div>
+                  <% } %>
+
+
+                    <% if (!dispositivo.id_painel_cob || !dispositivo.id_painel_terr) { %>
+                      <div class="d-flex justify-content-center mb-2 w-100 mt-3">
+                        <button type="submit" class="btn btn-success">Salvar</button>
+                      </div>
+                      <% } %>
+
+
+
+                        <%if(dispositivo.id_status===1){%>
+                          <div class="d-flex justify-content-center mb-2 w-100 mt-5 gap-5">
+
+                            <% if (!paramCob || paramCob.volume_cx1==null) { %>
+                              <button type="button" class="btn btn-primary" id="show-form-cob-btn">
+                                Inserir Parametrização Cobertura
+                              </button>
+                              <% } else { %>
+                                <div class="card p-3 w-50">
+                                  <h5 class="text-center">Parametrização Cobertura</h5>
+                                  <div class="col-md-6 mb-4">
+                                    <h5 class="mb-3">Caixa 1</h5>
+                                    <p><strong>Volume:</strong>
+                                      <%= paramCob ? paramCob.volume_cx1 : '' %>
+                                    </p>
+                                    <p><strong>Altura 1:</strong>
+                                      <%= paramCob ? paramCob.altura1_cx1 : '' %>
+                                    </p>
+                                    <p><strong>Altura 2:</strong>
+                                      <%= paramCob ? paramCob.altura2_cx1 : '' %>
+                                    </p>
+                                    <p><strong>Diâmetro 1:</strong>
+                                      <%= paramCob ? paramCob.diam1_cx1 : '' %>
+                                    </p>
+                                    <p><strong>Diâmetro 2:</strong>
+                                      <%= paramCob ? paramCob.diam2_cx1 : '' %>
+                                    </p>
+                                  </div>
+                                  <hr>
+                                  <div class="col-md-6 mb-4">
+                                    <h5 class="mb-3">Caixa 2</h5>
+                                    <p><strong>Volume:</strong>
+                                      <%= paramCob ? paramCob.volume_cx2 : '' %>
+                                    </p>
+                                    <p><strong>Altura 1:</strong>
+                                      <%= paramCob ? paramCob.altura1_cx2 : '' %>
+                                    </p>
+                                    <p><strong>Altura 2:</strong>
+                                      <%= paramCob ? paramCob.altura2_cx2 : '' %>
+                                    </p>
+                                    <p><strong>Diâmetro 1:</strong>
+                                      <%= paramCob ? paramCob.diam1_cx2 : '' %>
+                                    </p>
+                                    <p><strong>Diâmetro 2:</strong>
+                                      <%= paramCob ? paramCob.diam2_cx2 : '' %>
+                                    </p>
+                                  </div>
+
+                                  <buttontype="button" class="btn btn-primary" id="show-form-cob-btn">Alterar</button>
+
+                                </div>
+                                <% } %>
+
+                                  <% if (!paramTerr || paramTerr.terr_volume_cx1==null) { %>
+                                    <!-- Botão para parametrização do térreo -->
+                                    <button type="button" class="btn btn-primary" id="show-form-terr-btn">
+                                      Inserir Parametrização Térreo
+                                    </button>
+                                    <% } else { %>
+                                      <!-- Card com informações preenchidas -->
+                                      <div class="card p-3 w-50">
+                                        <h5 class="text-center">Parametrização Térreo</h5>
+
+                                        <p><strong>Quantidade de Caixas:</strong>
+                                          <%= paramTerr.terr_qte_cxs %>
+                                        </p>
+                                        <p><strong>Tensão:</strong>
+                                          <%= paramTerr.terr_tensao %>
+                                        </p>
+
+                                        <hr>
+                                        <h6>Caixa 1</h6>
+                                        <p><strong>Volume:</strong>
+                                          <%= paramTerr.terr_volume_cx1 %>
+                                        </p>
+                                        <p><strong>Altura 1:</strong>
+                                          <%= paramTerr.terr_altura1_cx1 %>
+                                        </p>
+                                        <p><strong>Altura 2:</strong>
+                                          <%= paramTerr.terr_altura2_cx1 %>
+                                        </p>
+                                        <p><strong>Diâmetro 1:</strong>
+                                          <%= paramTerr.terr_diam1_cx1 %>
+                                        </p>
+                                        <p><strong>Diâmetro 2:</strong>
+                                          <%= paramTerr.terr_diam2_cx1 %>
+                                        </p>
+
+                                        <h6>Bomba 1</h6>
+                                        <p><strong>CV:</strong>
+                                          <%= paramTerr.terr_cv1 %>
+                                        </p>
+                                        <p><strong>INOM:</strong>
+                                          <%= paramTerr.terr_inom1 %>
+                                        </p>
+                                        <p><strong>IAFS:</strong>
+                                          <%= paramTerr.terr_iafs1 %>
+                                        </p>
+                                        <p><strong>FP:</strong>
+                                          <%= paramTerr.terr_fp1 %>
+                                        </p>
+                                        <p><strong>EFC:</strong>
+                                          <%= paramTerr.terr_efc1 %>
+                                        </p>
+                                        <p><strong>IAIN:</strong>
+                                          <%= paramTerr.terr_iain1 %>
+                                        </p>
+
+                                        <hr>
+                                        <h6>Caixa 2</h6>
+                                        <p><strong>Volume:</strong>
+                                          <%= paramTerr.terr_volume_cx2 %>
+                                        </p>
+                                        <p><strong>Altura 1:</strong>
+                                          <%= paramTerr.terr_altura1_cx2 %>
+                                        </p>
+                                        <p><strong>Altura 2:</strong>
+                                          <%= paramTerr.terr_altura2_cx2 %>
+                                        </p>
+                                        <p><strong>Diâmetro 1:</strong>
+                                          <%= paramTerr.terr_diam1_cx2 %>
+                                        </p>
+                                        <p><strong>Diâmetro 2:</strong>
+                                          <%= paramTerr.terr_diam2_cx2 %>
+                                        </p>
+
+                                        <h6>Bomba 2</h6>
+                                        <p><strong>CV:</strong>
+                                          <%= paramTerr.terr_cv2 %>
+                                        </p>
+                                        <p><strong>INOM:</strong>
+                                          <%= paramTerr.terr_inom2 %>
+                                        </p>
+                                        <p><strong>IAFS:</strong>
+                                          <%= paramTerr.terr_iafs2 %>
+                                        </p>
+                                        <p><strong>FP:</strong>
+                                          <%= paramTerr.terr_fp2 %>
+                                        </p>
+                                        <p><strong>EFC:</strong>
+                                          <%= paramTerr.terr_efc2 %>
+                                        </p>
+                                        <p><strong>IAIN:</strong>
+                                          <%= paramTerr.terr_iain2 %>
+                                        </p>
+
+                                        <button type="button" class="btn btn-primary"
+                                          id="show-form-terr-btn">Alterar</button>
+
+                                      </div>
+                                      <% } %>
+
+                          </div>
+
+                          <% } %>
+
+
+
+
+      </form>
+
+
+
+      <%if(dispositivo.id_status===1){%>
+        <form class="w-100 mt-5 d-flex justify-content-center align-items-center"
+          action="/dispositivos/<%= dispositivo.id %>/atualizar-status" method="post">
+
+
+
+          <input type="hidden" name="dispositivo_id" value="<%= dispositivo.id %>">
+          <input type="hidden" name="id_painel_cob" value="<%= dispositivo.id_painel_cob %>">
+          <input type="hidden" name="id_painel_terr" value="<%= dispositivo.id_painel_terr %>">
+
+
+          <button type="submit" class="btn btn-primary">Salvar Configuração</button>
+
+
+
+
+        </form>
+        <% } %>
+
+
+          <%if(dispositivo.id_status===3){%>
+
+
+
+
+
+            <form class="w-100 d-flex " action="/dispositivos/<%= dispositivo.id %>/reset-status" method="post">
+
+
+
+              <input type="hidden" name="dispositivo_id" value="<%= dispositivo.id %>">
+              <input type="hidden" name="id_painel_cob" value="<%= dispositivo.id_painel_cob %>">
+              <input type="hidden" name="id_painel_terr" value="<%= dispositivo.id_painel_terr %>">
+
+
+              <button type="submit" name="remover" value="terr-<%= dispositivo.id %>"
+                class="btn btn-primary d-flex justify-content-start ">
+                Alterar Configurações
+              </button>
+
+
+
+
+            </form>
+
+
+            <div class="mt-5 instalacao text-center my-4 d-flex flex-column">
+              <button id="cobertura_install" class="btn btn-primary w-50">Instalar Painel Cobertura</button>
+
+              <button id="terreo_install" class="mt-5 btn btn-primary w-50">Instalar Painel Térreo</button>
+            </div>
+
+
+
+            <!-- FUNDO DESFOCADO -->
+            <div id="overlay" class="overlay hidden"></div>
+
+            <!-- CARD - COBERTURA -->
+            <div class="container_install container_install_cobertura hidden"
+              data-dispositivo-id="<%= dispositivo.id %>">
+              <div class="card_install animate">
+                <h4 class="mb-4">Instalação Painel Cobertura</h4>
+                <div class="slider_install" id="slider_cob">
+                  <div class="slide">Instrução 1 - COB</div>
+                  <div class="slide">Instrução 2 - COB</div>
+
+
+                  <form class="slide d-flex flex-column align-items-center" id="form_cob">
+                    <p>Finalização</p>
+                    <div id="loading_cob" class="mb-3">
+                      <div class="loader-container w-25 h-100 d-flex justify-content-center align-items-center">
+                        <div class="spinner" id="spinner_cob"></div>
+                        <div class="checkmark" id="checkmark_cob">
+                          <span class="check1"></span>
+                          <span class="check2"></span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="log_erros" id="log_erros">
+                      <span class="hd-error-cob w-100 d-flex justify-content-between align-items-center">
+                        <span>
+                          <%= dispositivo.status_painel_cobertura_descricao %>
+                        </span>
+
+                        <i class="bi bi-exclamation-octagon-fill"></i>
+                      </span>
+                      <span class="body-msg-cob w-100 d-flex justify-content-center align-items-center">
+                        <%= dispositivo.mensagem_log_cob %>
+                      </span>
+
+                      <a href="#" id="ok_cob" class="btn btn-primary w-100">Ok</a>
+                    </div>
+
+                  </form>
+                </div>
+                <div class="d-flex justify-content-between mt-3">
+                  <button id="cancel_cob" class="btn btn-outline-danger">Cancelar</button>
+                  <button id="next_cob" class="btn btn-outline-primary">Próximo</button>
+
+                </div>
+
+
+              </div>
+            </div>
+
+            <!-- CARD - TÉRREO -->
+            <div class="container_install container_install_terreo hidden" data-dispositivo-id="<%= dispositivo.id %>">
+              <div class="card_install animate">
+                <h4 class="mb-4">Instalação Painel Térreo</h4>
+                <div class="slider_install" id="slider_terr">
+                  <div class="slide">Instrução 1 - TERR</div>
+                  <div class="slide">Instrução 2 - TERR</div>
+                  <form class="slide d-flex flex-column align-items-center" id="form_terr">
+                    <p>Finalização</p>
+                    <div id="loading_terr" class="mb-3">
+                      <div class="loader-container w-25 h-100 d-flex justify-content-center align-items-center">
+                        <div class="spinner" id="spinner_terr"></div>
+                        <div class="checkmark" id="checkmark_terr">
+                          <span class="check1"></span>
+                          <span class="check2"></span>
+                        </div>
+                      </div>
+                    </div>
+
+
+
+
+
+                    <div class="log_erros" id="log_erros_terr">
+                      <span class="hd-error-terr w-100 d-flex justify-content-between align-items-center">
+                        <span>
+                          <%= dispositivo.status_painel_terreo_descricao %>
+                        </span>
+
+                        <i class="bi bi-exclamation-octagon-fill"></i>
+                      </span>
+                      <span class="body-msg-terr w-100 d-flex justify-content-center align-items-center">
+                        <%= dispositivo.mensagem_log_terreo %>
+                      </span>
+
+                      <a href="#" id="ok_terr" class="btn btn-primary w-100">Ok</a>
+                    </div>
+
+
+
+                  </form>
+                </div>
+                <div class="d-flex justify-content-between mt-3">
+                  <button id="cancel_terr" class="btn btn-outline-danger">Cancelar</button>
+                  <button id="next_terr" class="btn btn-outline-primary">Próximo</button>
+                </div>
+              </div>
+
+            </div>
+
+            <% } %>
+
+
+              <%if(dispositivo.id_status===4){%>
+
+
+                <div class="container-fluid mt-3">
+                  <ul class="nav nav-tabs" id="mainTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                      <button class="nav-link active" id="monitoring-tab" data-bs-toggle="tab"
+                        data-bs-target="#monitoring" type="button" role="tab">
+                        <i class="fas fa-tachometer-alt me-2"></i>Monitoramento
+                      </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                      <button class="nav-link" id="logs-tab" data-bs-toggle="tab" data-bs-target="#logs" type="button"
+                        role="tab">
+                        <i class="fas fa-list-alt me-2"></i>Lista de Logs Instantâneo
+                      </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                      <button class="nav-link" id="logs-ciclo-tab" data-bs-toggle="tab" data-bs-target="#logs-ciclo"
+                        type="button" role="tab">
+                        <i class="fas fa-history me-2"></i>Lista de Logs Ciclos
+                      </button>
+                    </li>
+                  </ul>
+
+
+
+                  <div class="tab-content" id="mainTabContent">
+                    <!-- Aba de Monitoramento -->
+                    <div class="tab-pane fade show active" id="monitoring" role="tabpanel">
+                      <!-- Cobertura -->
+                      <div>
+                        <h2>Caixas Cobertura</h2>
+                        <div class="tank-container flex-wrap ">
+                          <% if(paramCob && paramCob.qte_cxs) { %>
+                            <% for(let i=0; i < paramCob.qte_cxs; i++) { %>
+                              <div class="tank">
+                                <div class="reflection"></div>
+                                <div class="water" id="water-cob-<%=i%>">
+                                  <div class="wave"></div>
+                                </div>
+                              </div>
+                              <div class="level-bar">
+                                <div class="level-indicator" id="levelIndicator-cob-<%=i%>" style="height: 0%;"></div>
+                                <div class="level-value" id="levelValue-cob-<%=i%>">0L</div>
+                              </div>
+                              <% } %>
+                                <% } else { %>
+                                  <p>Nenhuma caixa configurada para cobertura.</p>
+                                  <% } %>
+                        </div>
+                      </div>
+
+                      <!-- Térreo -->
+                      <div>
+                        <h2>Caixas Térreo</h2>
+                        <div class="tank-container">
+                          <% if(paramTerr && paramTerr.terr_qte_cxs) { %>
+                            <% for(let i=0; i < paramTerr.terr_qte_cxs; i++) { %>
+                              <div class="tank">
+                                <div class="reflection"></div>
+                                <div class="water" id="water-terr-<%=i%>">
+                                  <div class="wave"></div>
+                                </div>
+                              </div>
+                              <div class="level-bar">
+                                <div class="level-indicator" id="levelIndicator-terr-<%=i%>" style="height: 0%;"></div>
+                                <div class="level-value" id="levelValue-terr-<%=i%>">0L</div>
+                              </div>
+                              <% } %>
+                                <% } else { %>
+                                  <p>Nenhuma caixa configurada para térreo.</p>
+                                  <% } %>
+
+
+                        </div>
+
+
+
+                      </div>
+
+                      <div id="estado-ciclo" style="font-size: 1.2rem; font-weight: bold;">
+                        estado ciclo:
+                      </div>
+
+
+
+
+
+                      <label>
+                        <input type="checkbox" id="bombaToggle">
+                        Ligar Bomba
+                      </label>
+                      <p id="status">Status: Desligado</p>
+
+                    </div>
+
+
+                    <!-- Aba de Logs -->
+                    <div class="tab-pane fade" id="logs" role="tabpanel">
+                      <div class="d-flex justify-content-between align-items-center mb-3">
+
+                      </div>
+
+                      <div class="tabela-container mb-5">
+                        <h1>Lista de Logs</h1>
+                        <form method="POST" action="/dispositivos">
+
+                          <div class="d-flex justify-content-end mb-2">
+                            <button type="submit" id="btnSalvar" class="btn btn-success" disabled
+                              style="opacity: 0; pointer-events: none; transition: opacity 0.3s ease;">
+                              Salvar
+                            </button>
+                          </div>
+
+                          <table class="table table-striped mb-5">
+                            <thead>
+                              <tr>
+                                <th>ID</th>
+                                <th>Timestamp</th>
+
+                                <th>Flag Painel cobertura</th>
+                                <th>Mensagem erro cobertura</th>
+                                <th>Flag painel térreo</th>
+                                <th>Mensagem erro térreo</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <% logErrosRows.forEach((logErrosRow, index)=> { %>
+                                <tr>
+                                  <td class=" justify-content-center d-sm-inline-flex w-100">
+                                    <%= logErrosRow.id_log_paineis %>
+                                  </td>
+
+
+                                  <td>
+                                    <%= logErrosRow.timestamp %>
+                                  </td>
+
+                                  <td>
+                                    <%= logErrosRow.flag_painel_cobb %>
+                                  </td>
+                                  <td>
+                                    <%= logErrosRow.mensagem_erro_cobertura %>
+                                  </td>
+                                  <td>
+                                    <%= logErrosRow.flag_painel_terreo %>
+                                  </td>
+                                  <td>
+                                    <%= logErrosRow.mensagem_erro_terreo %>
+                                  </td>
+
+
+                                </tr>
+                                <% }); %>
+                            </tbody>
+                          </table>
+
+                        </form>
+                      </div>
+
+
+
+
+
+
+                    </div>
+
+
+                    <!-- Aba de Logs Ciclos -->
+                    <div class="tab-pane fade" id="logs-ciclo" role="tabpanel">
+                      <div class="tabela-container mb-5">
+                        <h1>Lista de Logs Ciclos</h1>
+
+
+
+                        <table class="table table-striped">
+                          <thead>
+                            <tr>
+                              <th>ID Ciclo</th>
+                              <th>Data de Início</th>
+                              <th>Tempo de Duração</th>
+
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <% logCiclosRows.forEach((log)=> { %>
+                              <tr>
+                                <td><a href="#" class="open-cycle-tab" data-ciclo-id="<%= log.id_log_ciclos %>">
+                                    <%= log.id_log_ciclos %>
+                                  </a></td>
+                                <td>
+                                  <%= log.data_inicio %>
+                                </td>
+                                <td>
+                                  <%= log.tempo_duracao %>
+                                </td>
+
+                              </tr>
+                              <% }) %>
+                          </tbody>
+                        </table>
+
+                      </div>
+                    </div>
+
+                    <!-- TEMPLATE OCULTO PARA ABAS DE GERENCIADOR DE CICLOS -->
+                    <div id="template-aba-ciclo" style="display: none;">
+                      <div class="tab-pane fade" id="__ID__" role="tabpanel">
+                        <h3>Gerenciador de Ciclo: __ID__</h3>
+                        <% logCiclosRows.forEach((log)=> { %>
+                          <p> <%= log.data_inicio %></p>
+
+                        <% }) %>  
+                        
+                      </div>
+                    </div>
+
+
+                  </div>
+                </div>
+                <% } %>
+
+
+
+
+    </main>
+
+
+
+    <div class="form-card" id="form-card-cob">
+
+
+      <a class="close-button" id="close-form-btn" href=""><i class="bi bi-x-lg"></i></a>
+      <h3 class="w-100 text-center mb-5">Parametrização</h3>
+      <form action="/dispositivos/<%= dispositivo.id %>/inserir-parametros-cobertura" method="post" id="registroForm">
+        <input type="hidden" name="dispositivo_id" value="<%= dispositivo.id %>">
+        <input type="hidden" name="id_painel_cob" value="<%= dispositivo.id_painel_cob %>">
+        <input type="hidden" name="id_painel_terr" value="<%= dispositivo.id_painel_terr %>">
+
+        <div class="content-form d-flex justify-content-between mb-5">
+          <div class="cob w-100 d-flex flex-column align-items-center">
+            <h4 class="mb-4">Painel Cobertura</h4>
+
+            <div class="form-group w-25">
+              <label for="qte_cxs">Quantidade de Caixas:</label>
+              <select name="qte_cxs" id="qte_cxs" class="form-control" required>
+                <option value="">Selecione</option>
+                <option value="1" <%=paramCob && paramCob.qte_cxs=='1' ? 'selected' : '' %>>1</option>
+                <option value="2" <%=paramCob && paramCob.qte_cxs=='2' ? 'selected' : '' %>>2</option>
+              </select>
+            </div>
+
+            <div class="w-100 d-flex justify-content-between mt-4 gap-3">
+
+              <div class="d-flex flex-column w-50 px-3 border-end">
+                <h5 class="mb-3">Caixa 1</h5>
+                <div class="form-group">
+                  <label>Volume:</label>
+                  <input type="number" min="0" name="volume_cx1" class="form-control bloqueia-letras"
+                    value="<%= paramCob ? paramCob.volume_cx1 : '' %>" required>
+                </div>
+                <div class="form-group">
+                  <label>Altura 1:</label>
+                  <input type="number" min="0" name="altura1_cx1" class="form-control bloqueia-letras"
+                    value="<%= paramCob ? paramCob.altura1_cx1 : '' %>" required>
+                </div>
+                <div class="form-group">
+                  <label>Altura 2:</label>
+                  <input type="number" min="0" name="altura2_cx1" class="form-control bloqueia-letras"
+                    value="<%= paramCob ? paramCob.altura2_cx1 : '' %>">
+                </div>
+                <div class="form-group">
+                  <label>Diâmetro 1:</label>
+                  <input type="number" min="0" name="diam1_cx1" class="form-control bloqueia-letras"
+                    value="<%= paramCob ? paramCob.diam1_cx1 : '' %>" required>
+                </div>
+                <div class="form-group">
+                  <label>Diâmetro 2:</label>
+                  <input type="number" min="0" name="diam2_cx1" class="form-control bloqueia-letras"
+                    value="<%= paramCob ? paramCob.diam2_cx1 : '' %>" required>
+                </div>
+              </div>
+
+
+              <div class="d-flex flex-column w-50 px-3">
+                <h5 class="mb-3">Caixa 2</h5>
+                <div class="form-group">
+                  <label>Volume:</label>
+                  <input type="number" min="0" name="volume_cx2" class="form-control bloqueia-letras"
+                    value="<%= paramCob ? paramCob.volume_cx2 : '' %>" required>
+                </div>
+                <div class="form-group">
+                  <label>Altura 1:</label>
+                  <input type="number" min="0" name="altura1_cx2" class="form-control bloqueia-letras"
+                    value="<%= paramCob ? paramCob.altura1_cx2 : '' %>" required>
+                </div>
+                <div class="form-group">
+                  <label>Altura 2:</label>
+                  <input type="number" min="0" name="altura2_cx2" class="form-control bloqueia-letras"
+                    value="<%= paramCob ? paramCob.altura2_cx2 : '' %>" required>
+                </div>
+                <div class="form-group">
+                  <label>Diâmetro 1:</label>
+                  <input type="number" min="0" name="diam1_cx2" class="form-control bloqueia-letras"
+                    value="<%= paramCob ? paramCob.diam1_cx2 : '' %>">
+                </div>
+                <div class="form-group">
+                  <label>Diâmetro 2:</label>
+                  <input type="number" min="0" name="diam2_cx2" class="form-control bloqueia-letras"
+                    value="<%= paramCob ? paramCob.diam2_cx2 : '' %>" required>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+
+
+        </div>
+
+
+        <button class="mt-5" type="submit">Salvar</button>
+
+      </form>
+
+    </div>
+
+
+
+
+    <div class="form-card terr" id="form-card-terr">
+      <a class="close-button" id="close-form-btn-2" href=""><i class="bi bi-x-lg"></i></a>
+      <h3 class="w-100 text-center mb-5">Parametrização</h3>
+      <form action="/dispositivos/<%= dispositivo.id %>/inserir-parametros-terreo" method="post" id="registroForm">
+        <input type="hidden" name="dispositivo_id" value="<%= dispositivo.id %>">
+        <input type="hidden" name="id_painel_cob" value="<%= dispositivo.id_paineWl_cob %>">
+        <input type="hidden" name="id_painel_terr" value="<%= dispositivo.id_painel_terr %>">
+
+        <!-- CAIXAS: lado a lado -->
+        <div class="row mb-4">
+
+          <div class="col-md-6 mb-5 w-100 d-flex justify-content-center align-items-center flex-column">
+            <label>Quantidade de Caixas:</label>
+            <select name="terr_qte_cxs" id="terr_qte_cxs" class="form-control w-50" required>
+              <option value="">Selecione</option>
+              <option value="1" <%=paramTerr && paramTerr.terr_qte_cxs=='1' ? 'selected' : '' %>>1</option>
+              <option value="2" <%=paramTerr && paramTerr.terr_qte_cxs=='2' ? 'selected' : '' %>>2</option>
+            </select>
+          </div>
+
+
+          <h4 class="mb-4 text-center mt-5">Parâmetros dos Reservatórios</h4>
+
+          <div class="col-md-6 mb-5">
+            <h5>Caixa 1</h5>
+            <div class="form-group mb-2">
+              <label for="terr_volume_cx1">Volume</label>
+              <input class="form-control bloqueia-letras" type="number" min="0" name="terr_volume_cx1"
+                id="terr_volume_cx1" value="<%= paramTerr ? paramTerr.terr_volume_cx1 : '' %>" required>
+            </div>
+            <div class="form-group mb-2">
+              <label for="terr_altura1_cx1">Altura 1</label>
+              <input class="form-control bloqueia-letras" type="number" min="0" name="terr_altura1_cx1"
+                id="terr_altura1_cx1" value="<%= paramTerr ? paramTerr.terr_altura1_cx1 : '' %>" required>
+            </div>
+            <div class="form-group mb-2">
+              <label for="terr_altura2_cx1">Altura 2</label>
+              <input class="form-control bloqueia-letras" type="number" min="0" name="terr_altura2_cx1"
+                id="terr_altura2_cx1" value="<%= paramTerr ? paramTerr.terr_altura2_cx1 : '' %>" required>
+            </div>
+            <div class="form-group mb-2">
+              <label for="terr_diam1_cx1">Diâmetro 1</label>
+              <input class="form-control bloqueia-letras" type="number" min="0" name="terr_diam1_cx1"
+                id="terr_diam1_cx1" value="<%= paramTerr ? paramTerr.terr_diam1_cx1 : '' %>" required>
+            </div>
+            <div class="form-group mb-2">
+              <label for="terr_diam2_cx1">Diâmetro 2</label>
+              <input class="form-control bloqueia-letras" type="number" min="0" name="terr_diam2_cx1"
+                id="terr_diam2_cx1" value="<%= paramTerr ? paramTerr.terr_diam2_cx1 : '' %>" required>
+            </div>
+          </div>
+
+          <!-- Caixa 2 -->
+          <div class="col-md-6">
+            <h5>Caixa 2</h5>
+            <div class="form-group mb-2">
+              <label for="terr_volume_cx2">Volume</label>
+              <input class="form-control bloqueia-letras" type="number" min="0" name="terr_volume_cx2"
+                id="terr_volume_cx2" value="<%= paramTerr ? paramTerr.terr_volume_cx2 : '' %>" required>
+            </div>
+            <div class="form-group mb-2">
+              <label for="terr_altura1_cx2">Altura 1</label>
+              <input class="form-control bloqueia-letras" type="number" min="0" name="terr_altura1_cx2"
+                id="terr_altura1_cx2" value="<%= paramTerr ? paramTerr.terr_altura1_cx2 : '' %>" required>
+            </div>
+            <div class="form-group mb-2">
+              <label for="terr_altura2_cx2">Altura 2</label>
+              <input class="form-control bloqueia-letras" type="number" min="0" name="terr_altura2_cx2"
+                id="terr_altura2_cx2" value="<%= paramTerr ? paramTerr.terr_altura2_cx2 : '' %>" required>
+            </div>
+            <div class="form-group mb-2">
+              <label for="terr_diam1_cx2">Diâmetro 1</label>
+              <input class="form-control bloqueia-letras" type="number" min="0" name="terr_diam1_cx2"
+                id="terr_diam1_cx2" value="<%= paramTerr ? paramTerr.terr_diam1_cx2 : '' %>" required>
+            </div>
+            <div class="form-group mb-2">
+              <label for="terr_diam2_cx2">Diâmetro 2</label>
+              <input class="form-control bloqueia-letras" type="number" min="0" name="terr_diam2_cx2"
+                id="terr_diam2_cx2" value="<%= paramTerr ? paramTerr.terr_diam2_cx2 : '' %>" required>
+            </div>
+          </div>
+        </div>
+
+        <h4 class="mb-4 mt-5 w-100 text-center">Parâmetros Elétricos</h4>
+        <div class="col-md-6 mb-5 w-100 d-flex justify-content-center align-items-center flex-column">
+          <label>Tensão:</label>
+          <select class="form-control w-50" name="terr_tensao" id="qte_cxs" required>
+            <option value="">Selecione</option>
+            <option value="380V/220v" <%=paramTerr && String(paramTerr.terr_tensao)==='380V/220v' ? 'selected' : '' %>
+              >380V/220v</option>
+            <option value="220V/127v" <%=paramTerr && String(paramTerr.terr_tensao)==='220V/127v' ? 'selected' : '' %>
+              >220V/127v</option>
+          </select>
+        </div>
+        <!-- BOMBAS: lado a lado -->
+        <div class="row mb-4">
+
+          <!-- Bomba 1 -->
+          <div class="col-md-6">
+            <h5>Bomba 1</h5>
+            <div class="form-group mb-2">
+              <label for="terr_cv1">CV 1</label>
+              <input class="form-control decimal-only" type="text" min="0" step="0.01" name="terr_cv1" id="terr_cv1"
+                value="<%= paramTerr ? paramTerr.terr_cv1 : '' %>" required>
+
+            </div>
+            <div class="form-group mb-2">
+              <label for="terr_inom1">I Nominal</label>
+              <input class="form-control decimal-only" type="text" min="0" step="0.01" name="terr_inom1" id="terr_inom1"
+                value="<%= paramTerr ? paramTerr.terr_inom1 : '' %>" required>
+            </div>
+            <div class="form-group mb-2">
+              <label for="terr_iafs1">IAFS</label>
+              <input class="form-control decimal-only" type="text" min="0" step="0.01" name="terr_iafs1" id="terr_iafs1"
+                value="<%= paramTerr ? paramTerr.terr_iafs1 : '' %>" required>
+            </div>
+            <div class="form-group mb-2">
+              <label for="terr_fp1">Fator de Potência</label>
+              <input class="form-control decimal-only" type="text" min="0" max="0.99" step="0.01" name="terr_fp1"
+                id="terr_fp1" value="<%= paramTerr ? paramTerr.terr_fp1 : '' %>" required>
+            </div>
+            <div class="form-group mb-2">
+              <label for="terr_efc1">Eficiência</label>
+              <input class="form-control decimal-only" type="text" min="0" step="0.01" name="terr_efc1" id="terr_efc1"
+                value="<%= paramTerr ? paramTerr.terr_efc1 : '' %>" required>
+            </div>
+            <div class="form-group mb-2">
+              <label>IAIN1:</label>
+              <input class="form-control decimal-only" type="text" min="0" step="0.01" name="terr_iain1"
+                value="<%= paramTerr ? paramTerr.terr_iain1 : '' %>" required>
+            </div>
+          </div>
+
+          <!-- Bomba 2 -->
+          <div class="col-md-6">
+            <h5>Bomba 2</h5>
+            <div class="form-group mb-2">
+              <label for="terr_cv2">CV</label>
+              <input class="form-control decimal-only" type="text" min="0" step="0.01" name="terr_cv2" id="terr_cv2"
+                value="<%= paramTerr ? paramTerr.terr_cv2 : '' %>" required>
+            </div>
+            <div class="form-group mb-2">
+              <label for="terr_inom2">I Nominal</label>
+              <input class="form-control decimal-only" type="text" min="0" step="0.01" name="terr_inom2" id="terr_inom2"
+                value="<%= paramTerr ? paramTerr.terr_inom2 : '' %>">
+            </div>
+            <div class="form-group mb-2">
+              <label for="terr_iafs2">IAFS</label>
+              <input class="form-control decimal-only" type="text" min="0" step="0.01" name="terr_iafs2" id="terr_iafs2"
+                value="<%= paramTerr ? paramTerr.terr_iafs2 : '' %>" required>
+            </div>
+            <div class="form-group mb-2">
+              <label for="terr_fp2">Fator de Potência</label>
+              <input class="form-control decimal-only" type="text" min="0" max="0.99" step="0.01" name="terr_fp2"
+                id="terr_fp2" value="<%= paramTerr ? paramTerr.terr_fp2 : '' %>" required>
+            </div>
+            <div class="form-group mb-2">
+              <label for="terr_efc2">Eficiência</label>
+              <input class="form-control decimal-only" type="text" min="0" step="0.01" name="terr_efc2" id="terr_efc2"
+                value="<%= paramTerr ? paramTerr.terr_efc2 : '' %>" required>
+            </div>
+
+            <div class="form-group mb-2">
+              <label>IAIN2:</label>
+              <input class="form-control decimal-only" type="text" min="0" step="0.01" name="terr_iain2"
+                value="<%= paramTerr ? paramTerr.terr_iain2 : '' %>">
+            </div>
+          </div>
+        </div>
+        <button class="mt-5" type="submit">Salvar</button>
+
+
+    </div>
+  </div>
+
+  </form>
+  </div>
+
+  <div id="mensagem-container"></div>
+
+  <script src="../public/js/script.js"></script>
+  <script src="../public/js/translate.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Evento de clique para adicionar nova aba de Gerenciador de Ciclos
+      document.querySelectorAll('.open-cycle-tab').forEach(link => {
+        link.addEventListener('click', function (e) {
+          e.preventDefault();
+
+          const cicloId = this.dataset.cicloId;
+          const tabId = `ciclo-${cicloId}`;
+          const existingTab = document.getElementById(`tab-${tabId}`);
+
+          // Verifica se a aba já existe
+          if (!existingTab) {
+            // Criar nova aba
+            const newTab = document.createElement('li');
+            newTab.classList.add('nav-item');
+            newTab.innerHTML = `
+              <button class="nav-link" id="tab-${tabId}" data-bs-toggle="tab" data-bs-target="#${tabId}" type="button" role="tab">
+                <i class="fas fa-cogs me-2"></i>Gerenciador de Ciclos #${cicloId}
+                <span class="ms-2 text-danger close-tab" style="cursor: pointer;">&times;</span>
+              </button>
+            `;
+            document.getElementById('mainTabs').appendChild(newTab);
+
+            // Clonar o template da nova aba
+            const template = document.querySelector('#template-aba-ciclo').innerHTML;
+            const contentHtml = template.replace(/__ID__/g, tabId);
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = contentHtml;
+            const newContent = wrapper.firstElementChild;
+
+            // Adiciona o conteúdo na área de abas
+            document.getElementById('mainTabContent').appendChild(newContent);
+
+         
+
+            // Ativar a nova aba
+            const tabTrigger = new bootstrap.Tab(document.getElementById(`tab-${tabId}`));
+            tabTrigger.show();
+
+            // Adiciona evento para fechar aba
+            newTab.querySelector('.close-tab').addEventListener('click', function (e) {
+              e.stopPropagation();
+              const isActive = newTab.querySelector('button').classList.contains('active');
+
+              newTab.remove();
+              newContent.remove();
+
+              // Voltar para aba "Lista de Logs Ciclos" se a aba excluída estava ativa
+              if (isActive) {
+                const fallback = new bootstrap.Tab(document.getElementById('logs-ciclo'));
+                fallback.show();
+              }
+            });
+          } else {
+            const tabTrigger = new bootstrap.Tab(existingTab);
+            tabTrigger.show();
+          }
+        });
+      });
+    });
+  </script>
+
+
+  <script>
+    // Adiciona efeito de transição suave nas abas
+    document.addEventListener('DOMContentLoaded', function () {
+      const tabs = document.querySelectorAll('[data-bs-toggle="tab"]');
+      tabs.forEach(tab => {
+        tab.addEventListener('shown.bs.tab', function (e) {
+          const targetPane = document.querySelector(e.target.getAttribute('data-bs-target'));
+          targetPane.style.opacity = '0';
+          setTimeout(() => {
+            targetPane.style.transition = 'opacity 0.3s ease';
+            targetPane.style.opacity = '1';
+          }, 50);
+        });
+      });
+    });
+  </script>
+
+  <script>
+    const toggle = document.getElementById('bombaToggle');
+    const status = document.getElementById('status');
+
+    toggle.addEventListener('change', async () => {
+      const comando = toggle.checked ? 'on' : 'off';
+      status.textContent = 'Status: ' + (toggle.checked ? 'Ligado' : 'Desligado');
+      const dispositivoId = document.body.dataset.dispositivoId;
+      console.log(dispositivoId)
+      await fetch(`/dispositivos/tcp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ comando, dispositivoId })
+      });
+    });
+  </script>
+
+  <script>
+    const paramCob = {
+      volume_cx1: <%= paramCob?.volume_cx1 || 0 %>,
+      qte_cxs: <%= paramCob?.qte_cxs || 1 %>,
+        volume_cx2: <%= paramCob?.volume_cx2 || 0 %>
+    };
+
+    const paramTerr = {
+      terr_volume_cx1: <%= paramTerr?.terr_volume_cx1 || 0 %>,
+      terr_qte_cxs: <%= paramTerr?.terr_qte_cxs || 1 %>,
+        terr_volume_cx2: <%= paramTerr?.terr_volume_cx2 || 0 %>
+    };
+    const volumesCobertura = [
+      paramCob.volume_cx1 ?? 0,
+      ...(paramCob.qte_cxs > 1 ? [paramCob.volume_cx2 ?? 0] : [])
+    ];
+
+    const volumesTerreo = [
+      paramTerr.terr_volume_cx1 ?? 0,
+      ...(paramTerr.terr_qte_cxs > 1 ? [paramTerr.terr_volume_cx2 ?? 0] : [])
+    ];
+
+    function updateTank(tankId, indicatorId, valueId, current, max) {
+      console.log(`Tentando atualizar: ${tankId} com ${current}L de ${max}L`);
+
+      const tankElement = document.getElementById(tankId);
+      const indicatorElement = document.getElementById(indicatorId);
+      const valueElement = document.getElementById(valueId);
+
+      if (!tankElement) {
+        console.error(`Elemento ${tankId} NÃO ENCONTRADO!`);
+        return;
+      }
+      if (!indicatorElement) {
+        console.error(`Elemento ${indicatorId} NÃO ENCONTRADO!`);
+        return;
+      }
+      if (!valueElement) {
+        console.error(`Elemento ${valueId} NÃO ENCONTRADO!`);
+        return;
+      }
+
+      const limitado = Math.max(0, Math.min(current, max));
+      const porcentagem = max > 0 ? (limitado / max) * 100 : 0;
+
+      console.log(`Elementos encontrados. Aplicando ${porcentagem.toFixed(1)}%`);
+
+      tankElement.style.height = `${porcentagem}%`;
+      indicatorElement.style.height = `${porcentagem}%`;
+
+      console.log(`${tankId} atualizado: altura=${tankElement.style.height}, porcentagem=${porcentagem.toFixed(1)}%`);
+
+      animateCounter(valueId, limitado);
+
+    }
+
+    function animateCounter(elementId, litros) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+
+      const start = parseInt(el.textContent) || 0;
+      const end = Math.round(litros);
+
+      const duration = 1000;
+      const frameRate = 60;
+      const totalFrames = Math.round((duration / 1000) * frameRate);
+      const increment = (end - start) / totalFrames;
+
+      let currentFrame = 0;
+      let currentValue = start;
+
+      const counter = setInterval(() => {
+        currentFrame++;
+        currentValue += increment;
+        el.textContent = `${Math.round(currentValue)}L`;
+
+        if (currentFrame >= totalFrames) {
+          clearInterval(counter);
+          el.textContent = `${Math.round(end)}L`;
+        }
+      }, 1000 / frameRate);
+    }
+
+    function atualizarTanques(niveisCob, niveisTerr) {
+      console.log('=== ATUALIZANDO TANQUES ===');
+      console.log('Níveis Cobertura:', niveisCob);
+      console.log('Níveis Térreo:', niveisTerr);
+      console.log('Volumes Cobertura:', volumesCobertura);
+      console.log('Volumes Térreo:', volumesTerreo);
+
+      niveisCob.forEach((nivel, i) => {
+        if (i < volumesCobertura.length && volumesCobertura[i] > 0) {
+          console.log(`Cobertura ${i + 1}: ${nivel}L de ${volumesCobertura[i]}L`);
+          updateTank(
+            `water-cob-${i}`,
+            `levelIndicator-cob-${i}`,
+            `levelValue-cob-${i}`,
+            nivel,
+            volumesCobertura[i]
+          );
+        }
+      });
+
+      niveisTerr.forEach((nivel, i) => {
+        if (i < volumesTerreo.length && volumesTerreo[i] > 0) {
+          console.log(`Térreo ${i + 1}: ${nivel}L de ${volumesTerreo[i]}L`);
+          updateTank(
+            `water-terr-${i}`,
+            `levelIndicator-terr-${i}`,
+            `levelValue-terr-${i}`,
+            nivel,
+            volumesTerreo[i]
+          );
+        }
+      });
+
+      console.log('Atualização concluída\n');
+    }
+
+
+    function atualizarEstadoCiclo(state_ciclo) {
+      const estadoElement = document.getElementById('estado-ciclo');
+      if (!estadoElement) {
+        console.error('Elemento estado-ciclo não encontrado!');
+        return;
+      }
+
+      let textoEstado;
+
+      switch (state_ciclo) {
+        case 0:
+          textoEstado = 'Desligado';
+          break;
+        case 1:
+          textoEstado = 'Ligando bomba';
+          break;
+        case 2:
+          textoEstado = 'Em operação';
+          break;
+        case 3:
+          textoEstado = 'Finalizando';
+          break;
+        default:
+          textoEstado = `${state_ciclo}`;
+      }
+
+      estadoElement.textContent = `Estado do Ciclo: ${textoEstado}`;
+      console.log(`Atualizado estado_ciclo: ${textoEstado}`);
+    }
+
+
+    const dispositivoId = parseInt(document.body.dataset.dispositivoId);
+    const wss = new WebSocket('wss://192.168.3.101');
+
+    wss.onopen = () => {
+      console.log('✅ WebSocket conectado');
+      // Envia o ID do dispositivo ao servidor
+      wss.send(JSON.stringify({ type: 'init', dispositivoId }));
+    };
+
+    wss.onerror = (e) => {
+      console.error('❌ WebSocket erro:', e);
+    };
+
+    wss.onclose = () => {
+      console.warn('⚠️ WebSocket desconectado');
+    };
+
+    wss.onmessage = (message) => {
+      try {
+        const payload = JSON.parse(message.data);
+
+        if (
+          payload.table === 'registro_instantaneo' &&
+          payload.type === 'insert_log_virtual' &&
+          payload.data.id_disp === dispositivoId
+        ) {
+          const data = payload.data;
+          console.log('📦 Dados recebidos:', data);
+
+          const niveisCob = [
+            data.res_levels_media?.res1c_m ?? 0,
+            data.res_levels_media?.res2c_m ?? 0
+          ];
+
+          const niveisTerr = [
+            data.res_levels_media?.res1t_m ?? 0,
+            data.res_levels_media?.res2t_m ?? 0
+          ];
+
+          atualizarTanques(niveisCob, niveisTerr);
+
+          // Se houver controle de ciclo no payload, atualiza:
+          if (data.state_ciclo !== undefined) {
+            atualizarEstadoCiclo(data.state_ciclo);
+          }
+        } else {
+          console.log('🔕 Ignorado (não é do dispositivo atual ou estrutura diferente)');
+        }
+      } catch (e) {
+        console.error('⚠️ Erro ao processar mensagem:', e);
+      }
+    };
+
+
+    console.log('🔍 Verificando elementos na inicialização:');
+    ['water-terr-0', 'water-terr-1', 'levelIndicator-terr-0', 'levelIndicator-terr-1'].forEach(id => {
+      const el = document.getElementById(id);
+      console.log(`${id}: ${el ? 'Encontrado' : 'NÃO encontrado'}`);
+    });
+
+
+    window.addEventListener('DOMContentLoaded', () => {
+      console.log('🔄 Buscando dados iniciais via HTTP...');
+      const dispositivoId = document.body.dataset.dispositivoId;
+      console.log('ID do dispositivo:', dispositivoId);
+
+      fetch(`/dispositivos/${dispositivoId}/tempo-real`)
+        .then(response => response.json())
+        .then(data => {
+          console.log('📥 Dados iniciais recebidos:', data);
+
+          const niveisCob = [
+            data.res1c_m ?? 0,
+            data.res2c_m ?? 0
+          ];
+
+          const niveisTerr = [
+            data.res1t_m ?? 0,
+            data.res2t_m ?? 0
+          ];
+
+          atualizarTanques(niveisCob, niveisTerr);
+
+          atualizarEstadoCiclo(data.state_ciclo);
+          atualizarBombaCiclo(data.bomba_ciclo);
+        })
+        .catch(error => {
+          console.error('Erro ao buscar dados iniciais:', error);
+        });
+    });
+
+  </script>
+
+
+
+
+  <script>
+    window.addEventListener("load", () => {
+      const container = document.querySelector(".container");
+      const footer_body = document.querySelector(".footer_body");
+
+      setTimeout(() => {
+        container.classList.remove("hidden");
+        footer_body.classList.remove("hidden");
+      }, 500);
+
+      document.getElementById("registrarProducao")?.addEventListener("click", () => {
+        alert('Produção registrada!');
+      });
+    });
+  </script>
+
+  <script>
+
+    setTimeout(() => {
+      const spinner = document.getElementById('spinner');
+      const checkmark = document.getElementById('checkmark');
+
+      spinner.style.animation = 'none';
+      spinner.style.borderColor = '#2ecc71';
+      spinner.style.borderTopColor = '#2ecc71';
+
+      checkmark.classList.add('show-check');
+    }, 5000);
+  </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const dispositivoId = document.querySelector('.container_install_cobertura')?.getAttribute('data-dispositivo-id');
+      const botaoTerr = document.getElementById("terreo_install");
+
+      if (!dispositivoId || !botaoTerr) return;
+
+      botaoTerr.disabled = true; // começa desabilitado
+
+      const verificarStatusCobertura = () => {
+        fetch(`/dispositivos/${dispositivoId}/ligar-painel-cob`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.ativo) {
+              botaoTerr.disabled = false;
+            } else {
+              botaoTerr.disabled = true;
+              // tenta novamente após alguns segundos
+              setTimeout(verificarStatusCobertura, 3000);
+            }
+          })
+          .catch(err => {
+            console.error("Erro ao verificar status do painel de cobertura:", err);
+            // tenta novamente após erro
+            setTimeout(verificarStatusCobertura, 5000);
+          });
+      };
+
+      verificarStatusCobertura();
+    });
+  </script>
+
+
+  <script>
+    const coberturaBtn = document.getElementById('cobertura_install');
+    const terreoBtn = document.getElementById('terreo_install');
+
+    const containerCob = document.querySelector('.container_install_cobertura');
+    const containerTerr = document.querySelector('.container_install_terreo');
+
+    const sliderCob = document.getElementById('slider_cob');
+    const sliderTerr = document.getElementById('slider_terr');
+
+    const overlay = document.getElementById('overlay');
+
+    const nextCobBtn = document.getElementById('next_cob');
+    const nextTerrBtn = document.getElementById('next_terr');
+
+    let cobIndex = 0;
+    let terrIndex = 0;
+
+    function resetSlides() {
+      cobIndex = 0;
+      terrIndex = 0;
+      sliderCob.style.transform = `translateX(0%)`;
+      sliderTerr.style.transform = `translateX(0%)`;
+    }
+
+    coberturaBtn.addEventListener('click', () => {
+      containerCob.classList.remove('hidden');
+      containerTerr.classList.add('hidden');
+      overlay.classList.remove('hidden');
+      resetSlides();
+    });
+
+    terreoBtn.addEventListener('click', () => {
+      containerTerr.classList.remove('hidden');
+      containerCob.classList.add('hidden');
+      overlay.classList.remove('hidden');
+      resetSlides();
+    });
+
+
+    // Cancelar e recarregar
+    document.getElementById('cancel_cob').addEventListener('click', () => {
+      window.location.reload();
+    });
+
+    document.getElementById('cancel_terr').addEventListener('click', () => {
+      window.location.reload();
+    });
+
+
+    document.getElementById('ok_terr').addEventListener('click', () => {
+      window.location.reload();
+    });
+
+    document.getElementById('ok_cob').addEventListener('click', () => {
+      window.location.reload();
+    });
+
+
+    // Envio simulado
+    document.getElementById('form_cob').addEventListener('submit', (e) => {
+      e.preventDefault();
+      alert('Enviando dados do COBERTURA...');
+      overlay.classList.add('hidden');
+      containerCob.classList.add('hidden');
+    });
+
+    document.getElementById('form_terr').addEventListener('submit', (e) => {
+      e.preventDefault();
+      alert('Enviando dados do TÉRREO...');
+      overlay.classList.add('hidden');
+      containerTerr.classList.add('hidden');
+    });
+
+    let intervaloCob = null;
+
+    function iniciarVerificacaoPainelCob(dispositivoId) {
+      const spinner = document.getElementById('spinner_cob');
+      const checkmark = document.getElementById('checkmark_cob');
+      const erroCard = document.querySelector('.log_erros');
+      const erroStatusSpan = erroCard.querySelector('.hd-error-cob span');
+      const erroMensagemSpan = erroCard.querySelector('.body-msg-cob');
+
+      if (!spinner || !checkmark || !erroCard) return;
+
+      // Garante que o spinner está visível e o check escondido no início
+      spinner.style.display = 'block';
+      spinner.style.animation = 'spin 1s linear infinite';
+      spinner.style.borderColor = '#3498db';
+      spinner.style.borderTopColor = 'transparent';
+      checkmark.classList.remove('show-check');
+
+      // previne múltiplos intervalos rodando ao mesmo tempo
+      if (intervaloCob) clearInterval(intervaloCob);
+
+      intervaloCob = setInterval(() => {
+        fetch(`/dispositivos/${dispositivoId}/ligar-painel-cob`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.ativo) {
+              spinner.style.animation = 'none';
+              spinner.style.borderColor = '#2ecc71';
+              spinner.style.borderTopColor = '#2ecc71';
+
+              checkmark.classList.add('show-check');
+
+              clearInterval(intervaloCob);
+              intervaloCob = null;
+
+              setTimeout(() => {
+                location.reload();
+              }, 5000);
+            }
+
+            if (data.erro) {
+              clearInterval(intervaloCob);
+              intervaloCob = null;
+
+              if (data.status) erroStatusSpan.textContent = data.status;
+              if (data.mensagem) erroMensagemSpan.textContent = data.mensagem;
+
+              erroCard.classList.add('show-erro');
+            }
+          })
+          .catch(err => {
+            console.error('Erro ao verificar painel cobertura:', err);
+          });
+      }, 3000);
+    }
+
+
+    document.getElementById('next_cob').addEventListener('click', () => {
+      if (cobIndex < 2) {
+        cobIndex++;
+        sliderCob.style.transform = `translateX(-${cobIndex * 100}%)`;
+
+        if (cobIndex === 2) {
+          nextCobBtn.style.display = 'none';
+
+          const container = document.querySelector('.container_install_cobertura');
+          const dispositivoId = container.getAttribute('data-dispositivo-id');
+
+          if (dispositivoId) {
+            iniciarVerificacaoPainelCob(dispositivoId);
+          } else {
+            console.error('ID do dispositivo não encontrado!');
+          }
+        }
+      }
+    });
+
+    let intervalo = null;
+
+    function iniciarVerificacaoPainelTerr(dispositivoId) {
+      const spinner = document.getElementById('spinner_terr');
+      const checkmark = document.getElementById('checkmark_terr');
+      const erroCard = document.getElementById('log_erros_terr');
+      const erroStatusSpan = erroCard.querySelector('.hd-error-terr span');
+      const erroMensagemSpan = erroCard.querySelector('.body-msg-terr');
+
+      if (!spinner || !checkmark || !erroCard) return;
+
+      spinner.style.display = 'block';
+      spinner.style.animation = 'spin 1s linear infinite';
+      spinner.style.borderColor = '#3498db';
+      spinner.style.borderTopColor = 'transparent';
+      checkmark.classList.remove('show-check');
+
+      if (intervalo) clearInterval(intervalo);
+
+      intervalo = setInterval(() => {
+        fetch(`/dispositivos/${dispositivoId}/ligar-painel-terr`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.ativo) {
+              spinner.style.animation = 'none';
+              spinner.style.borderColor = '#2ecc71';
+              spinner.style.borderTopColor = '#2ecc71';
+
+              checkmark.classList.add('show-check');
+
+              clearInterval(intervalo);
+              intervalo = null;
+
+
+              setTimeout(() => {
+                location.reload();
+              }, 5000);
+            }
+
+            if (data.erro) {
+              clearInterval(intervalo);
+              intervalo = null;
+
+              if (data.status) erroStatusSpan.textContent = data.status;
+              if (data.mensagem) erroMensagemSpan.textContent = data.mensagem;
+
+              erroCard.classList.add('show-erro');
+            }
+          })
+          .catch(err => {
+            console.error('Erro ao verificar painel térreo:', err);
+          });
+      }, 3000);
+    }
+
+
+    document.getElementById('next_terr').addEventListener('click', () => {
+      if (terrIndex < 2) {
+        terrIndex++;
+        sliderTerr.style.transform = `translateX(-${terrIndex * 100}%)`;
+
+        if (terrIndex === 2) {
+          nextTerrBtn.style.display = 'none';
+
+          const container = document.querySelector('.container_install_terreo');
+          const dispositivoId = container.getAttribute('data-dispositivo-id');
+
+          if (dispositivoId) {
+            iniciarVerificacaoPainelTerr(dispositivoId);
+          } else {
+            console.error('ID do dispositivo não encontrado!');
+          }
+        }
+      }
+    });
+
+
+
+  </script>
+
+
+  <script>
+    function limitarParteInteiraZero(id) {
+      const input = document.getElementById(id);
+      input.addEventListener('input', () => {
+        let val = parseFloat(input.value);
+        if (val >= 1) {
+          input.value = '0.99';
+        } else if (val < 0) {
+          input.value = '0.00';
+        }
+      });
+    }
+
+    limitarParteInteiraZero('terr_fp1');
+    limitarParteInteiraZero('terr_fp2');
+  </script>
+
+
+
+  <script>
+    document.querySelectorAll('.bloqueia-letras').forEach(input => {
+      input.addEventListener('keydown', function (e) {
+        if (["e", "E", "+", "-"].includes(e.key)) {
+          e.preventDefault();
+        }
+      });
+    });
+  </script>
+
+
+
+  <script>
+    document.querySelectorAll('input[type="text"]').forEach(input => {
+      input.addEventListener('input', function (e) {
+        // Permite apenas números e ponto
+        this.value = this.value.replace(/[^0-9.]/g, '');
+
+        // Garante que só exista um ponto decimal
+        const parts = this.value.split('.');
+        if (parts.length > 2) {
+          this.value = parts[0] + '.' + parts.slice(1).join('');
+        }
+      });
+    });
+  </script>
+
+
+  <script>
+    // Função para extrair parâmetros da query string da URL
+    function getUrlParameter(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
+
+    // Captura a mensagem de erro ou sucesso da URL
+    const erroMensagem = getUrlParameter('erro');
+    const sucessoMensagem = getUrlParameter('sucesso');
+
+    // Exibe a mensagem de erro ou sucesso na página
+    const mensagemContainer = document.getElementById('mensagem-container');
+
+    if (erroMensagem) {
+      mensagemContainer.innerHTML = `<div class="mensagem erro">${erroMensagem}</div>`;
+    }
+
+    if (sucessoMensagem) {
+      mensagemContainer.innerHTML = `<div class="mensagem sucesso">${sucessoMensagem}</div>`;
+    }
+  </script>
+
+
+  <style>
+    .mensagem {
+      padding: 10px;
+      margin: 20px 0;
+      border-radius: 5px;
+      color: white;
+    }
+
+    .erro {
+      background-color: red;
+    }
+
+    .sucesso {
+      background-color: green;
+    }
+  </style>
+
+  <script>
+    const formCard = document.getElementById("form-card-cob");
+    const formCard2 = document.getElementById("form-card-terr");
+    const showFormCobBtn = document.getElementById("show-form-cob-btn");
+    const showFormTerrBtn = document.getElementById("show-form-terr-btn");
+    const closeFormBtn = document.getElementById("close-form-btn");
+    const closeFormBtn2 = document.getElementById("close-form-btn-2");
+    const addBombexBtn = document.getElementById("add-bombex-btn");
+
+    // Mostra o card ao clicar no botão "+"
+    showFormCobBtn?.addEventListener("click", () => {
+      formCard?.classList.add("active");
+    });
+    showFormTerrBtn?.addEventListener("click", () => {
+      formCard2?.classList.add("active");
+    });
+
+    // Fecha o card ao clicar no botão "X"
+    closeFormBtn?.addEventListener("click", (event) => {
+      event.preventDefault();
+      formCard?.classList.remove("active");
+    });
+
+    addBombexBtn?.addEventListener("click", () => {
+      formCard2?.classList.add("active");
+    });
+
+    closeFormBtn2?.addEventListener("click", (event) => {
+      event.preventDefault();
+      formCard2?.classList.remove("active");
+    });
+  </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const form = document.getElementById("registroForm");
+
+      const qteCobSelect = document.getElementById("qte_cxs");
+      const qteTerrSelect = document.getElementById("terr_qte_cxs");
+
+      const caixa2CobInputs = [
+        "volume_cx2",
+        "altura1_cx2",
+        "altura2_cx2",
+        "diam1_cx2",
+        "diam2_cx2"
+      ].map(id => document.getElementsByName(id)[0]);
+
+      const caixa2TerrInputs = [
+        "terr_volume_cx2",
+        "terr_altura1_cx2",
+        "terr_altura2_cx2",
+        "terr_diam1_cx2",
+        "terr_diam2_cx2"
+      ].map(id => document.getElementsByName(id)[0]);
+
+      function toggleFields(qteSelect, inputs) {
+        const mostrar = qteSelect.value === "2";
+        inputs.forEach(input => {
+          input.disabled = !mostrar;
+          if (!mostrar) input.value = "";
+        });
+      }
+
+      function validarCaixa2(qteSelect, inputs, painel) {
+        if (qteSelect.value === "1") {
+          const algumPreenchido = inputs.some(input => input.value.trim() !== "");
+          if (algumPreenchido) {
+            alert(`Você selecionou 1 caixa no painel ${painel}, mas preencheu campos da Caixa 2. Limpe-os ou selecione 2 caixas.`);
+            return false;
+          }
+        }
+        return true;
+      }
+
+      // Atualiza os campos ao carregar
+      toggleFields(qteCobSelect, caixa2CobInputs);
+      toggleFields(qteTerrSelect, caixa2TerrInputs);
+
+      // Atualiza ao mudar o select
+      qteCobSelect.addEventListener("change", () => toggleFields(qteCobSelect, caixa2CobInputs));
+      qteTerrSelect.addEventListener("change", () => toggleFields(qteTerrSelect, caixa2TerrInputs));
+
+      // Validação ao enviar
+      form.addEventListener("submit", function (e) {
+        const validCob = validarCaixa2(qteCobSelect, caixa2CobInputs, "COBERTURA");
+        const validTerr = validarCaixa2(qteTerrSelect, caixa2TerrInputs, "TÉRREO");
+        if (!validCob || !validTerr) e.preventDefault();
+      });
+    });
+  </script>
+
+
+</body>
+
+
+</html>

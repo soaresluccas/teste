@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Criar Tabela</title>
+  <link rel="stylesheet" href="../public/estilo/style.css">
+  <link rel="stylesheet" href="../public/estilo/banco.css">
+  <link rel="stylesheet" href="../public/estilo/filtro.css">
+  <link rel="stylesheet" href="../public/estilo/create.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+  <div class="container hidden">
+    <aside class="sidebar">
+      <a href="../createdb.html" class="menu-btn" data-i18n="menu.voltar">Voltar</a>
+      <a href="../perfil.html" class="menu-btn" data-i18n="menu.perfil">Perfil</a>
+      <a href="../config.html" class="menu-btn" data-i18n="menu.configuracoes">Configurações</a>
+      <div class="menu-diamond"></div>
+      <div class="logo_ex">
+        <h1>ÊXODO</h1>
+        <h4>AUTOMAÇÃO</h4>
+      </div>
+      <a href="/logout" class="menu-btn exit-btn" data-i18n="menu.sair">sair</a>
+      <h2 class="footer_aside">
+        <i class="bi bi-c-circle"></i>
+        <span data-i18n="footer.direitos">Desenvolvido por Lucas Soares</span>
+      </h2>
+    </aside>
+    <main class="content">
+      <div id="loading" class="loading-container">
+        <div class="loading-circle"></div>
+      </div>    
+
+      <div class="conteudo">
+        <h1 data-i18n="criar_tabela.titulo">Criar Tabela</h1>
+        <form id="create-table-form" class="create-table-form">
+          <div class="form-group">
+            <label for="db-name">Banco</label>
+            <select id="db-name">
+              <option value="">Teste1</option>
+              
+            </select>
+            <label for="table-name" data-i18n="criar_tabela.nome">Nome da Tabela:</label>
+            <input type="text" id="table-name" placeholder="Digite o nome..." required>
+
+            <label for="columns-number" data-i18n="criar_tabela.colunas">Número de Colunas:</label>
+            <input type="number" id="columns-number" min="1" value="4" required>
+          </div>
+          <button type="submit" class="btn-filtro" id="criar" data-i18n="criar_tabela.criar">Criar</button>
+        </form>
+
+        <div class="column_roll  hiddens">
+            <h2>Configurar Colunas</h2>
+            <div class="columns">
+                <div id="columns-config" class="hidden">
+                    
+                    <div id="columns-container">
+                      
+                    </div>
+                    
+                  </div>
+            </div>
+            <div class="btns">
+                <button id="add-column" class="btn-filtro">Adicionar Coluna</button>
+                <button id="submit-columns" class="btn-filtro">Concluir</button>
+            </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <div class="footer_body hidden">
+    <i class="bi bi-c-circle"></i>
+    <h1>2024 - Êxodo Automação |</h1>
+    <h1>Desenvolvido por Lucas Soares</h1>
+  </div>
+</body>
+
+<script src="../public/js/script.js"></script>
+<script src="../public/js/translate.js"></script>
+<script>
+  // Função para carregar a página inicialmente
+  window.addEventListener("load", () => {
+    const container = document.querySelector(".container");
+    const footer_body = document.querySelector(".footer_body");
+
+    setTimeout(() => {
+      container.classList.remove("hidden");
+      footer_body.classList.remove("hidden");
+    }, 500); 
+  });
+
+  // Configuração inicial para criar tabela
+  const form = document.getElementById("create-table-form");
+  const conteudo = document.querySelector(".conteudo");
+  const loading = document.getElementById("loading");
+  const columnsConfig = document.getElementById("columns-config");
+  const columnsContainer = document.getElementById("columns-container");
+  const addColumnButton = document.getElementById("add-column");
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const numColumns = document.getElementById("columns-number").value;
+    conteudo.classList.add("hidden");
+    loading.classList.remove("hidden");
+
+    setTimeout(() => {
+      loading.classList.add("hidden");
+      columnsConfig.classList.remove("hidden");
+      for (let i = 0; i < numColumns; i++) {
+        addColumn();
+      }
+    }, 1500);
+  });
+
+  // Função para adicionar inputs para uma coluna
+  function addColumn() {
+    const columnDiv = document.createElement("div");
+    columnDiv.classList.add("column-config");
+    columnDiv.innerHTML = `
+      <label>Nome:</label>
+      <input type="text" placeholder="Nome da coluna">
+      <label>Tipo:</label>
+      <select class="column_type" name="field_type[0]" id="field_0_2">
+        <option data-length-restricted="0" title="Um inteiro de 4 bytes, o limite com sinal vai de -2.147.483.648 a 2.147.483.647, o limite sem sinal vai de 0 a 4.294.967.295">INT</option><option data-length-restricted="0" title="Uma string de comprimento variável (0-65,535), o comprimento máximo efetivo está sujeito ao tamanho máximo da linha">VARCHAR</option><option data-length-restricted="0" title="Uma coluna do tipo TEXTO com um comprimento máximo de 65.535 (2^16 - 1) caracteres, armazenada com um prefixo de dois bytes indicando o comprimento do valor em bytes">TEXT</option><option data-length-restricted="0" title="Uma data, o limite suportado é de 1000-01-01 até 9999-12-31">DATE</option><optgroup label="Numérico"><option data-length-restricted="0" title="Um inteiro de 1 byte, o limite com sinal vai de -128 a 127, o limite sem sinal vai de 0 a 255">TINYINT</option><option data-length-restricted="0" title="Um inteiro de 2 bytes, o limite com sinal vai de -32.768 até 32.767, o limite sem sinal vai de 0 até 65.535">SMALLINT</option><option data-length-restricted="0" title="Um inteiro de 3 bytes, o limite com sinal vai de -8.388.608 até 8.388.607, o limite sem sinal vai de 0 até 16.777.215">MEDIUMINT</option><option data-length-restricted="0" title="Um inteiro de 4 bytes, o limite com sinal vai de -2.147.483.648 a 2.147.483.647, o limite sem sinal vai de 0 a 4.294.967.295">INT</option><option data-length-restricted="0" title="Um inteiro de 8 bytes, o limite com sinal vai de -9.223.372.036.854.775.808 a 9.223.372.036.854.775.808, o limite sem sinal vai de 0 a 18.446.744.073.709.551.615">BIGINT</option><option disabled="disabled">-</option><option data-length-restricted="0" title="Um número de ponto fixo (M, D) - o número máximo de dígitos (M) é 65 (10 por padrão), e o número máximo de decimais (D) é 30 (0 por padrão)">DECIMAL</option><option data-length-restricted="0" title="Um número curto de ponto flutuante, os valores permitidos são: de -3,402823466E+38 a -1,175494351E-38, 0 e de 1,175494351E-38 a 3,402823466E+38">FLOAT</option><option data-length-restricted="0" title="Um número de ponto flutuante de dupla precisão, os valores permitidos são -1.7976931348623157E+308 a -2.2250738585072014E-308, 0 e 2.2250738585072014E-308 a 1.7976931348623157E+308">DOUBLE</option><option data-length-restricted="0" title="Sinônimo para DOUBLE (exceção: no modo SQL REAL_AS_FLOAT ele é um sinônimo para FLOAT)">REAL</option><option disabled="disabled">-</option><option data-length-restricted="0" title="Em um campo de tipo bit (M), o armazenamento M de bits por valor é de (1 por padrão, 64 no máximo)">BIT</option><option data-length-restricted="0" title="Um sinônimo para TINYINT(1), o zero é considerado falso, qualquer valor diferente de zero é considerado verdadeiro">BOOLEAN</option><option data-length-restricted="0" title="Um apelido para BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE">SERIAL</option></optgroup><optgroup label="Data e Tempo"><option data-length-restricted="0" title="Uma data, o limite suportado é de 1000-01-01 até 9999-12-31">DATE</option><option data-length-restricted="0" title="Uma combinação de data e hora, o limite suportado vai de 1000-01-01 00:00:00 a 9999-12-31 23:59:59">DATETIME</option><option data-length-restricted="0" title="Um timestamp, o limite vai de 1970-01-01 00:00:01 UTC até 2038-01-09 03:14:07 UTC, armazenado como o número de segundos desde a época (1970-01-01 00:00:00 UTC)">TIMESTAMP</option><option data-length-restricted="0" title="Um horário, o limite suportado é de -838:59:59 até 838:59:59">TIME</option><option data-length-restricted="0" title="Um ano no formato de quatro dígitos (4, padrão) ou dois dígitos (2), os valores permitidos são: de 70 (1970) a 69 (2069) ou de 1901 a 2155, e 0000">YEAR</option></optgroup><optgroup label="String"><option data-length-restricted="0" title="Uma string de comprimento fixo (0-255, 1 por padrão) que é sempre acrescida à direita com espaços para o comprimento especificado quando armazenada">CHAR</option><option data-length-restricted="0" title="Uma string de comprimento variável (0-65,535), o comprimento máximo efetivo está sujeito ao tamanho máximo da linha">VARCHAR</option><option disabled="disabled">-</option><option data-length-restricted="0" title="Uma coluna do tipo TEXTO com um comprimento máximo de 255 (2^8 - 1) caracteres, armazenada com um prefixo de um byte indicando o tamanho do valor em bytes">TINYTEXT</option><option data-length-restricted="0" title="Uma coluna do tipo TEXTO com um comprimento máximo de 65.535 (2^16 - 1) caracteres, armazenada com um prefixo de dois bytes indicando o comprimento do valor em bytes">TEXT</option><option data-length-restricted="0" title="Uma coluna do tipo TEXTO com um comprimento máximo de 16.777.215 (2^24 - 1) caracteres, armazenada com um prefixo de três bytes indicando o comprimento do valor em bytes">MEDIUMTEXT</option><option data-length-restricted="0" title="Uma coluna do tipo TEXTO com um comprimento máximo de 4.294.967.295 (2^32 - 1) caracteres ou 4GiB, armazenada com um prefixo de quatro bytes indicando o comprimento do valor em bytes">LONGTEXT</option><option disabled="disabled">-</option><option data-length-restricted="0" title="Similar ao tipo CHAR, mas armazena strings de bytes binários em vez de strings de caracteres não-binários">BINARY</option><option data-length-restricted="0" title="Similar ao tipo VARCHAR, mas armazena strings de bytes binários em vez de strings de caracteres não-binários">VARBINARY</option><option disabled="disabled">-</option><option data-length-restricted="0" title="Uma coluna do tipo BLOB com um comprimento máximo de 255 (2^8 - 1) bytes, armazenada com um prefixo de um byte indicando o comprimento do valor em bytes">TINYBLOB</option><option data-length-restricted="0" title="Uma cluna do tipo BLOB com um comprimento máximo de 65.535 (2^16 - 1) bytes, armazenada com um prefixo de dois bytes indicando o comprimento do valor em bytes">BLOB</option><option data-length-restricted="0" title="Uma coluna do tipo BLOB com um comprimento máximo de 16.777.215 (2^24 - 1) bytes, armazenada com um prefixo de três bytes indicando o comprimento do valor em bytes">MEDIUMBLOB</option><option data-length-restricted="0" title="Uma coluna do tipo BLOB com um comprimento máximo de 4.294.967.295 (2^32 - 1) bytes ou 4GB, armazenada com um prefixo de quatro bytes indicando o comprimento do valor em bytes">LONGBLOB</option><option disabled="disabled">-</option><option data-length-restricted="0" title="Uma enumeração, escolhida de uma lista de até 65.535 valores ou o valor especial de erro ''">ENUM</option><option data-length-restricted="0" title="Um valor único escolhido de um conjunto de até 64 membros">SET</option></optgroup><optgroup label="Espacial"><option data-length-restricted="0" title="Um tipo que pode armazenar uma geometria de qualquer tipo">GEOMETRY</option><option data-length-restricted="0" title="Um ponto em um espaço bidimensional">POINT</option><option data-length-restricted="0" title="Uma curva com uma interpolação linear entre pontos">LINESTRING</option><option data-length-restricted="0" title="Um polígono">POLYGON</option><option data-length-restricted="0" title="Uma coleção de pontos">MULTIPOINT</option><option data-length-restricted="0" title="Uma coleção de curvas com interpolação linear entre pontos">MULTILINESTRING</option><option data-length-restricted="0" title="Uma coleção de polígonos">MULTIPOLYGON</option><option data-length-restricted="0" title="Uma coleção de objetos geométricos de qualquer tipo">GEOMETRYCOLLECTION</option></optgroup><optgroup label="JSON"><option data-length-restricted="0" title="Armazena e permite o acesso eficiente aos dados em documentos JSON (JavaScript Object Notation)">JSON</option></optgroup>
+      </select>
+      <label>Tamanho/Valores:</label>
+      <input type="text" placeholder="Ex: 255">
+      <label>Padrão:</label>
+      <input type="text" placeholder="Valor padrão">
+      <label>Índice:</label>
+      <select>
+        <option value="none">Nenhum</option>
+        <option value="PRIMARY">PRIMARY</option>
+        <option value="UNIQUE">UNIQUE</option>
+        <option value="INDEX">INDEX</option>
+      </select>
+      <label>Auto-Incremento:</label>
+      <input type="checkbox">
+      
+    `;
+    columnsContainer.appendChild(columnDiv);
+  }
+
+  // Evento para adicionar mais colunas manualmente
+  addColumnButton.addEventListener("click", () => {
+    addColumn();
+  });
+
+  // Submissão final do formulário de colunas
+  document.getElementById("submit-columns").addEventListener("click", () => {
+    const columns = [];
+    const columnConfigs = document.querySelectorAll(".column-config");
+    columnConfigs.forEach((config) => {
+      const nome = config.querySelector("input[type='text']").value;
+      const tipo = config.querySelector("select").value;
+      const tamanho = config.querySelector("input[placeholder='Ex: 255']").value;
+      const padrao = config.querySelector("input[placeholder='Valor padrão']").value;
+      const indice = config.querySelector("select:nth-of-type(2)").value;
+      const autoIncremento = config.querySelector("input[type='checkbox']").checked;
+      const column_roll = document.querySelector(".column_roll");
+      const form_column = document.querySelector(".create-table-form");
+
+      columns.push({
+        nome,
+        tipo,
+        tamanho,
+        padrao,
+        indice,
+        autoIncremento,
+      });
+    });
+
+    console.log("Colunas configuradas:", columns);
+
+    conteudo.classList.add("hidden");
+    loading.classList.remove("hidden");
+    setTimeout(() => {
+      loading.classList.add("hidden");
+      conteudo.classList.remove("hidden");
+      alert("Tabela configurada com sucesso!"); 
+    }, 1500);
+  
+    
+  });
+</script>
+
+<script>
+    document.getElementById("criar").addEventListener("click", () =>{
+        const column_roll = document.querySelector(".column_roll");
+        const form_column = document.querySelector(".create-table-form");
+        setTimeout(() => {
+            column_roll.classList.remove("hiddens");
+            form_column.classList.add("hiddens");
+            
+        }, 500); 
+    });
+</script>
+</html>

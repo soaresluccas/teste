@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Criar um Banco</title>
+  <link rel="stylesheet" href="../public/estilo/style.css">
+  <link rel="stylesheet" href="../public/estilo/banco.css">
+  <link rel="stylesheet" href="../public/estilo/filtro.css">
+  <link rel="stylesheet" href="../public/estilo/create.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+  <div class="container hidden">
+    <aside class="sidebar">
+      <a href="bancos.html" class="menu-btn" data-i18n="menu.voltar">Voltar</a>
+
+      
+      <div class="menu-diamond"></div>
+      
+      <div class="logo_ex">
+        <h1>ÊXODO</h1>
+        <h4>AUTOMAÇÃO</h4>
+      </div>
+      
+      <button class="menu-btn exit-btn" data-i18n="menu.sair">Sair</button>
+      
+      <h2 class="footer_aside">
+        <i class="bi bi-c-circle"></i>
+        <span data-i18n="footer.direitos">Desenvolvido por Lucas Soares</span>
+      </h2>
+    </aside>
+    <main class="content">
+      <div id="loading" class="loading-container hidden">
+        <div class="loading-circle"></div>
+      </div>    
+
+      <div class="conteudo">
+        <h1 data-i18n="criar_banco.titulo">Criar Banco de Dados</h1>
+        <form id="create-db-form">
+          <div class="form-group">
+            <label for="db-name" data-i18n="criar_banco.nome">Nome do Banco:</label>
+            <input type="text" id="db-name" placeholder="Digite o nome..." required>
+
+            <label for="collation" data-i18n="criar_banco.colacao">Colação:</label>
+            <select id="collation" required>
+              <option value="utf8_general_ci">UTF8 - General</option>
+              <option value="utf8_unicode_ci">UTF8 - Unicode</option>
+              <option value="latin1_swedish_ci">Latin1 - Swedish</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-filtro" data-i18n="criar_banco.criar">Criar</button>
+          <a href="tabelas/create_table.html">criar</a>
+        </form>
+      </div>
+    </main>
+  </div>
+  <div class="footer_body hidden">
+    <i class="bi bi-c-circle"></i>
+    <h1>2024 - Êxodo Automação |</h1>
+    <h1>Desenvolvido por Lucas Soares</h1>
+  </div>
+</body>
+
+<script src="../public/js/script.js"></script>
+<script src="../public/js/translate.js"></script>
+<script>
+    
+    window.addEventListener("load", () => {
+      const container = document.querySelector(".container");
+      const footer_body = document.querySelector(".footer_body");
+    
+      setTimeout(() => {
+        container.classList.remove("hidden");
+        footer_body.classList.remove("hidden");
+      }, 500); 
+    });
+    
+    
+    document.getElementById("create-db-form").addEventListener("submit", (event) => {
+    event.preventDefault(); 
+
+    const loading = document.getElementById("loading");
+    const conteudo = document.querySelector(".conteudo");
+
+   
+    conteudo.classList.add("hidden");
+    loading.classList.remove("hidden");
+
+    
+    setTimeout(() => {
+      loading.classList.add("hidden"); 
+      conteudo.classList.remove("hidden"); o
+
+      alert("Banco de dados criado com sucesso!");
+    }, 2000); 
+  });
+</script>
+    
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Êxodo</title>
+  <link rel="stylesheet" href="../public/estilo/style.css">
+  <link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+  integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+  crossorigin="anonymous"
+/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+  <div class="container hidden">
+    <aside class="sidebar">
+        
+      <a href="/bancos" class="menu-btn" data-i18n="menu.bancos_de_dados">Bancos de Dados</a>
+      <a href="/clientes" class="menu-btn" data-i18n="">Condomínios</a>
+      <a href="/dispositivos" class="menu-btn">Dispositivos</a>
+      <a href="/producao" class="menu-btn">Painéis</a>
+
+      
+      <div class="menu-diamond"></div>
+      
+      <div class="logo_ex">
+        <h1>ÊXODO</h1>
+        <h4>AUTOMAÇÃO</h4>
+      </div>
+
+      <a href="/logout" class="menu-btn exit-btn" data-i18n="menu.sair">sair</a>
+      
+      <h2 class="footer_aside">
+        <i class="bi bi-c-circle"></i>
+        <span data-i18n="footer.direitos">Desenvolvido por Lucas Soares</span>
+      </h2>
+    </aside>   
+    <main class="content">
+      
+      <div id="loading" class="loading-container">
+        <div class="loading-circle"></div>
+      </div>
+
+      
+      <section class="cards hidden">
+        <div class="card card-small">
+          
+        </div>
+        <div class="card card-small">
+          
+        </div>
+        <div class="card card-large">
+          
+        </div>
+      </section>
+    </main>
+  </div>
+  <div class="footer_body hidden">
+    <i class="bi bi-c-circle"></i>
+    <h1>2024 - Êxodo Automação |</h1>
+    <h1>Desenvolvido por Lucas Soares</h1>
+  </div>
+</body>
+
+<script src="../public/js/script.js"></script>
+<script src="js/translate.js"></script>
+<script src="js/color.js"></script>
+<script>
+window.addEventListener("load", () => {
+  const container = document.querySelector(".container");
+  const footer_body = document.querySelector(".footer_body");
+
+  
+  setTimeout(() => {
+    container.classList.remove("hidden");
+    footer_body.classList.remove("hidden");
+  }, 500); 
+});
+</script>
+</html>

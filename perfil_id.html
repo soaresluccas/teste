@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configurações</title>
+  <link rel="stylesheet" href="../public/estilo/style.css">
+  <link rel="stylesheet" href="../public/estilo/config.css">
+  <link rel="stylesheet" href="../public/estilo/perfil.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+  <div class="container hidden">
+    <aside class="sidebar">
+        
+        <a href="../index.html" class="menu-btn" data-i18n="menu.voltar">Voltar</a>
+        <a href="pages/Perfil.html" class="menu-btn" data-i18n="menu.perfil">Perfil</a>
+        <a href="pages/Config.html" class="menu-btn" data-i18n="menu.configuracoes">Configurações</a>
+        
+        <!-- Decoração lateral -->
+        <div class="menu-diamond"></div>
+        
+        <!-- Logo -->
+        <div class="logo_ex">
+          <h1>ÊXODO</h1>
+          <h4>AUTOMAÇÃO</h4>
+        </div>
+        
+        <!-- Botão de sair -->
+        <button class="menu-btn exit-btn" data-i18n="menu.sair">Sair</button>
+        
+        <!-- Rodapé do menu lateral -->
+        <h2 class="footer_aside">
+          <i class="bi bi-c-circle"></i>
+          <span data-i18n="footer.direitos">Desenvolvido por Lucas Soares</span>
+        </h2>
+      </aside>
+    <main class="content">
+      <!-- Loading Spinner -->
+      <div id="loading" class="loading-container">
+        <div class="loading-circle"></div>
+      </div>
+
+      <div class="conteudo">
+        <h1>Perfis</h1>
+        <div class="perfil_container">
+            <h3>Configurações de perfil</h3>
+            <div class="config_container">
+                <div class="perfil_btn">
+                    <div class="icon_perfil">
+                        <h2>Charles</h2>
+                    </div>
+                    
+                    <i class="bi bi-chevron-right"></i>
+                </div>
+                <div class="perfil_btn">
+                    <div class="icon_perfil">
+                        <h2>Ricardo</h2>
+                    </div>
+                    
+                    <i class="bi bi-chevron-right"></i>
+                </div>
+                <div class="perfil_btn">
+                    <div class="icon_perfil">
+                        <h2>Lucas</h2>
+                    </div>
+                    
+                    <i class="bi bi-chevron-right"></i> 
+                </div>
+
+                <div class="add_perfil">
+                    <a href="#" class="add_p">
+                        Adicionar perfil 
+                    </a>
+                </div>
+            </div>
+        </div>
+      
+    </main>
+  </div>
+  <div class="footer_body hidden">
+    <i class="bi bi-c-circle"></i>
+    <h1>2024 - Êxodo Automação |</h1>
+    <h1 data-i18n="footer.direitos">Desenvolvido por Lucas Soares</h1>
+  </div>
+</body>
+
+<script src="../public/js/script.js"></script>
+<script src="../public/js/translate.js"></script>
+<script src="../public/js/color.js"></script>
+<script>
+    window.addEventListener("load", () => {
+      const container = document.querySelector(".container");
+      const footer_body = document.querySelector(".footer_body");
+    
+      
+      setTimeout(() => {
+        container.classList.remove("hidden");
+        footer_body.classList.remove("hidden");
+      }, 500); 
+    });
+    </script>
+</html>

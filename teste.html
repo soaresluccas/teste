@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clientes</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    .cliente {
+      margin-bottom: 10px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .cliente h3 {
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Clientes</h1>
+  <h1>Lista de Condomínios</h1>
+  <ul>
+      <% dispositivos.forEach(function(condominio) { %>
+          <li><strong>ID:</strong> C<%= condominio.id %> - <strong>Nome:</strong> <%= condominio.nome_condominio %></li>
+      <% }); %>
+  </ul>
+  </div>
+
+
+</body>
+</html>

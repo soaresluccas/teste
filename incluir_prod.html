@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bancos de dados</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+    crossorigin="anonymous"
+  />
+  <link rel="stylesheet" href="/public/estilo/style.css">
+  <link rel="stylesheet" href="/public/estilo/banco.css">
+  <link rel="stylesheet" href="/public/estilo/filtro.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+  <div class="container hidden">
+    <aside class="sidebar">
+      <a href="/bombex/admin" class="menu-btn" data-i18n="menu.voltar">Voltar</a>
+      <div class="menu-diamond"></div>
+      <div class="logo_ex">
+        <h1>ÊXODO</h1>
+        <h4>AUTOMAÇÃO</h4>
+      </div>
+      <a href="/logout" class="menu-btn exit-btn" data-i18n="menu.sair">sair</a>
+      <h2 class="footer_aside">
+        <i class="bi bi-c-circle"></i>
+        <span data-i18n="footer.direitos">Desenvolvido por Lucas Soares</span>
+      </h2>
+    </aside>
+    <main class="content">
+      <form id="registrarProducaoForm" method="post" action="/registrar-prod">
+        <input type="hidden" name="condominio_id" value="<%= dispositivos[0].condominio_id %>">
+        <input type="hidden" name="parceiro_id" value="<%= dispositivos[0].parceiro_id%>">
+    
+        <% let blocoAtual = null; %>
+        
+        <% dispositivos.forEach((dispositivo, index) => { %>
+        
+
+        
+            <div class="form-group">
+                <label for="placa_potencia_terreo_<%= index %>">ID Placa Potência Térreo:</label>
+                <input type="text" id="placa_potencia_terreo_<%= index %>" name="placas[<%= index %>][id_potencia_terreo]" required>
+            </div>      
+        
+            <label for="placa_controle_terreo_<%= index %>">ID Placa Controle Térreo:</label>
+            <input type="text" id="placa_controle_terreo_<%= index %>" name="placas[<%= index %>][id_controle_terreo]" required>
+            <br>
+    
+            <label for="placa_controle_cobertura_<%= index %>">ID Placa Controle Cobertura:</label>
+            <input type="text" id="placa_controle_cobertura_<%= index %>" name="placas[<%= index %>][id_controle_cobertura]" required>
+            <br>
+    
+            <input type="hidden" name="placas[<%= index %>][id_bloco]" value="<%= dispositivo.id_bloco %>">
+        
+            <% blocoAtual = dispositivo.numero_bloco; %>
+        
+        <% }); %>
+        
+        <button type="submit" class="btn btn-primary">Registrar Produção</button>
+    </form>
+    </main>
+  </div>
+  <div class="footer_body hidden">
+    <i class="bi bi-c-circle"></i>
+    <h1>2024 - Êxodo Automação |</h1>
+    <h1>Desenvolvido por Lucas Soares</h1>
+  </div>
+
+  <script src="/public/js/script.js"></script>
+  <script src="/public/js/translate.js"></script>
+  <script>
+    window.addEventListener("load", () => {
+      const container = document.querySelector(".container");
+      const footer_body = document.querySelector(".footer_body");
+
+      setTimeout(() => {
+        container.classList.remove("hidden");
+        footer_body.classList.remove("hidden");
+      }, 500); 
+
+      document.getElementById("registrarProducao")?.addEventListener("click", () => {
+        alert('Produção registrada!');
+    
+      });
+    });
+  </script>
+</body>
+</html>

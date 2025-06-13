@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tabelas do Banco</title>
+  <link rel="stylesheet" href="../public/estilo/style.css">
+  <link rel="stylesheet" href="../public/estilo/banco.css">
+  <link rel="stylesheet" href="../public/estilo/filtro.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <style>
+    .error {
+      color: red;
+      font-size: 14px;
+      display: none;
+    }
+
+
+    .container_table {
+      display: flex;
+      justify-content: flex-start;
+      flex-direction: column;
+      max-height: 200px;
+      overflow-y: auto;
+      width: 100%;
+    }
+
+    .close-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: transparent;
+      border: none;
+      font-size: 16px;
+      font-weight: bold;
+      color: #555;
+      cursor: pointer;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background-color 0.3s ease;
+
+    }
+
+    .close-button:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+      /* Fundo cinza claro */
+      color: #f9f9f9;
+    }
+
+    .form-card a i {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #333;
+    }
+
+
+    /* Botão circular */
+    .add-button {
+      margin-top: 20px;
+      width: 60px;
+      height: 60px;
+      background-color: #007bff;
+      border: none;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-bottom: 20px;
+    }
+
+    .add-button:hover {
+      background-color: #0056b3;
+    }
+
+    .add-button i {
+      color: white;
+      font-size: 24px;
+    }
+
+    /* Card para o formulário */
+    .form-card {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      width: 400px;
+      height: 600px;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      opacity: 0;
+      transition: transform 0.4s ease, opacity 0.4s ease;
+      overflow-y: auto;
+    }
+
+    .form-card::-webkit-scrollbar-thumb {
+      background: #888;
+      /* Cor do "thumb" */
+      border-radius: 10px;
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+      /* Sombra interna */
+    }
+
+    .container_table::-webkit-scrollbar-thumb {
+      background: #888;
+      /* Cor do "thumb" */
+      border-radius: 10px;
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+      /* Sombra interna */
+    }
+
+    .form-card::-webkit-scrollbar {
+      width: 8px;
+      /* Largura do scrollbar */
+    }
+
+    .container_table::-webkit-scrollbar {
+      width: 8px;
+      /* Largura do scrollbar */
+    }
+
+    .form-card.active {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+
+    .form-card h3 {
+      margin-bottom: 15px;
+    }
+
+    .form-card .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-card label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .form-card input,
+    .form-card button {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .form-card button {
+      margin-top: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .form-card button:hover {
+      background-color: #0056b3;
+    }
+
+    .info-card {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      width: 400px;
+      height: 400px;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      opacity: 0;
+      transition: transform 0.4s ease, opacity 0.4s ease;
+      overflow-y: auto;
+    }
+
+    .info-card.active {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+
+    .btn_download {
+      border: none;
+      width: 35px;
+      height: 35px;
+      cursor: pointer;
+      border-radius: 100%;
+      transition: all 0.3s ease;
+    }
+
+    .btn_download:hover {
+      background-color: #7c7c7c;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container hidden">
+    <aside class="sidebar">
+      <a href="/bombex/admin" class="menu-btn" data-i18n="menu.voltar">Voltar</a>
+      <div class="menu-diamond"></div>
+      <div class="logo_ex">
+        <h1>ÊXODO</h1>
+        <h4>AUTOMAÇÃO</h4>
+      </div>
+      <a href="/logout" class="menu-btn exit-btn" data-i18n="menu.sair">sair</a>
+      <h2 class="footer_aside">
+        <i class="bi bi-c-circle"></i>
+        <span data-i18n="footer.direitos">Desenvolvido por Lucas Soares</span>
+      </h2>
+    </aside>
+    <main class="content overflow-y-auto">
+      <!-- Botão circular -->
+      <div class="button-container d-sm-inline-flex align-items-center gap-2 ">
+        <button class="add-button" id="show-form-btn">
+          <i class="bi bi-plus"></i>
+
+        </button>
+
+        <h6>Add painel cobertura</h6>
+      </div>
+
+
+      <div class="container_table">
+        <h3 class="text-center w-100">Tabela Painel Cobertura</h3>
+        <table class="table_infos">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% results.painel_cob.forEach(function(painel) { %>
+              <tr>
+                <td>
+                  <%= painel.id %>
+                </td>
+                <td>
+                  <a href="#" class="open-condominio-info" data-id="<%= painel.id %>">
+                    <%= painel.nome %>
+                  </a>
+                </td>
+                <td>
+                  <%= painel.Status %>
+                </td>
+              </tr>
+              <% }) %>
+          </tbody>
+        </table>
+      </div>
+
+
+      <div style="margin-top: 5rem;" class="button-container  d-sm-inline-flex align-items-center gap-2 ">
+        <button class="add-button" id="show-form-btn2">
+          <i class="bi bi-plus"></i>
+        </button>
+
+        <h6>Add painel térreo</h6>
+      </div>
+
+
+      <div class="container_table">
+        <h3 class="text-center w-100">Tabela Painel Térreo</h3>
+        <table class="table_infos">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% results.painel_terr.forEach(function(painel) { %>
+              <tr>
+                <td>
+                  <%= painel.id %>
+                </td>
+                <td>
+                  <a href="#" class="open-condominio-info" data-id="<%= painel.id %>">
+                    <%= painel.nome %>
+                  </a>
+                </td>
+                <td>
+                  <%= painel.Status %>
+                </td>
+              </tr>
+              <% }) %>
+          </tbody>
+        </table>
+      </div>
+
+
+
+
+      <!-- Formulário no card -->
+      <div class="form-card" id="form-card">
+        <!-- Botão de fechar -->
+
+        <a class="close-button" id="close-form-btn" href=""><i class="bi bi-x-lg"></i></a>
+        <h3>Adicionar Novo Registro</h3>
+        <form action="/producao/painel-cobertura" method="post" id="registroForm">
+          <div class="form-group">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" placeholder="Digite o nome do painel cobertura">
+          </div>
+          <div class="form-group">
+            <label for="data_producao">data de produção:</label>
+            <input type="date" name="data_producao" required>
+          </div>
+
+          <button id="salvar_form" type="submit">Salvar</button>
+        </form>
+      </div>
+
+      <div class="form-card" id="form-card-2">
+        <!-- Botão de fechar -->
+
+        <a class="close-button" id="close-form-btn-2" href=""><i class="bi bi-x-lg"></i></a>
+        <h3>Adicionar Novo Registro</h3>
+        <form action="/producao/painel-terreo" method="post" id="registroForm">
+          <div class="form-group">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" placeholder="Digite o nome do painel Terreo">
+          </div>
+
+          <div class="form-group">
+            <label for="data_producao">data de produção:</label>
+            <input type="date" name="data_producao" required>
+          </div>
+
+
+          <button id="salvar_form" type="submit">Salvar</button>
+        </form>
+      </div>
+    </main>
+
+
+
+
+
+
+
+
+    <script src="../public/js/script.js"></script>
+    <script src="../public/js/translate.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+    <script>
+      // Formulário Painel Cobertura
+      const formCob = document.querySelector('#form-card form');
+      const nomeCobInput = formCob.querySelector('#nome');
+      const btnCob = formCob.querySelector('#salvar_form');
+
+      btnCob.addEventListener('click', function (e) {
+        const nome = nomeCobInput.value.trim();
+        const padraoCobertura = /^B\d+C$/i;
+
+        if (!padraoCobertura.test(nome)) {
+          e.preventDefault();
+          alert("O nome do painel cobertura deve seguir o padrão: B<numero>C. Exemplo: B100C");
+          nomeCobInput.focus();
+        }
+      });
+
+      // Formulário Painel Térreo
+      const formTerr = document.querySelector('#form-card-2 form');
+      const nomeTerrInput = formTerr.querySelector('#nome');
+      const btnTerr = formTerr.querySelector('#salvar_form');
+
+      btnTerr.addEventListener('click', function (e) {
+        const nome = nomeTerrInput.value.trim();
+        const padraoTerreo = /^B\d+T$/i;
+
+        if (!padraoTerreo.test(nome)) {
+          e.preventDefault();
+          alert("O nome do painel térreo deve seguir o padrão: B<numero>T. Exemplo: B100T");
+          nomeTerrInput.focus();
+        }
+      });
+    </script>
+
+
+
+    <script>
+      const formCard = document.getElementById("form-card");
+      const formCard2 = document.getElementById("form-card-2");
+      const showFormBtn = document.getElementById("show-form-btn");
+      const showFormBtn2 = document.getElementById("show-form-btn2");
+      const closeFormBtn = document.getElementById("close-form-btn");
+      const closeFormBtn2 = document.getElementById("close-form-btn-2");
+
+
+      showFormBtn.addEventListener("click", () => {
+        formCard.classList.add("active");
+      });
+
+
+      closeFormBtn.addEventListener("click", () => {
+        event.preventDefault();
+        formCard.classList.remove("active");
+      });
+
+      showFormBtn2.addEventListener("click", () => {
+        formCard2.classList.add("active");
+      });
+
+      closeFormBtn2.addEventListener("click", (event) => {
+        event.preventDefault();
+        formCard2.classList.remove("active");
+      });
+    </script>
+    <script>
+      window.addEventListener("load", () => {
+        const container = document.querySelector(".container");
+        const footer_body = document.querySelector(".footer_body");
+
+        setTimeout(() => {
+          container.classList.remove("hidden");
+          footer_body.classList.remove("hidden");
+        }, 500);
+      });
+    </script>
+
+    <script>
+      let bombexCounter = 0;
+
+      document.getElementById("save-bombex-btn").addEventListener("click", (event) => {
+        event.preventDefault(); // Evita o envio do formulário
+
+        // Captura os valores do formulário
+        const bloco = document.getElementById("bloco").value;
+        const caixasTerreo = document.getElementById("caixas-terreo").value;
+        const caixasCobertura = document.getElementById("caixas-cobertura").value;
+
+        // Verifica se os campos foram preenchidos corretamente
+        if (bloco && caixasTerreo && caixasCobertura) {
+          // Cria um novo item na lista
+          const bombexItem = document.createElement("div");
+          bombexItem.classList.add("bombex-item");
+          bombexItem.style.border = "1px solid rgb(204, 204, 204)";
+          bombexItem.style.padding = "10px";
+          bombexItem.style.marginBottom = "10px";
+          bombexItem.style.borderRadius = "5px";
+          bombexItem.style.backgroundColor = "rgb(249, 249, 249)";
+
+          // Preenche o HTML com os valores do formulário
+          bombexItem.innerHTML = `
+      <label for="numero_bloco">Número do Bloco:</label>
+      <input type="text" name="bombex_data[${bombexCounter}][bloco]" value="${bloco}" readonly>
+      <label for="caixas_agua_terreo">Qte Caixas d'água térreo:</label>
+      <input type="text" name="bombex_data[${bombexCounter}][caixasTerreo]" value="${caixasTerreo}" readonly>
+      <label for="caixas_agua_cobertura">Qte Caixas d'água cobertura:</label>
+      <input type="text" name="bombex_data[${bombexCounter}][caixasCobertura]" value="${caixasCobertura}" readonly>
+      <button type="button" class="remove-bombex-btn">Remover</button>
+    `;
+
+          // Adiciona o item à lista
+          document.getElementById("bombex-list").appendChild(bombexItem);
+
+          // Evento para remover o item da lista
+          bombexItem.querySelector(".remove-bombex-btn").addEventListener("click", () => {
+            bombexItem.remove();
+          });
+
+
+
+          // Limpa os campos do formulário
+          document.getElementById("bloco").value = "";
+          document.getElementById("caixas-terreo").value = "";
+          document.getElementById("caixas-cobertura").value = "";
+
+          // Incrementa o contador para o próximo item
+          bombexCounter++;
+        } else {
+          alert("Preencha todos os campos corretamente.");
+        }
+
+        formCard2.classList.remove("active");
+      });
+    </script>
+
+    <script>
+      document.querySelectorAll('.open-condominio-info').forEach(item => {
+        item.addEventListener('click', (event) => {
+          event.preventDefault();
+          const condominioId = item.getAttribute('data-id');
+
+          // Requisição AJAX para buscar as informações do condomínio e blocos
+          fetch(`/get-condominio-info/${condominioId}`)
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                let blocosHTML = '';
+
+                // Verifica se há blocos associados
+                if (data.blocos.length > 0) {
+                  blocosHTML = '<h3>BOMEBX:</h3>';
+                  data.blocos.forEach(bloco => {
+                    blocosHTML += `
+                            <a href="/dispositivo/${bloco.id}&${condominioId}">${bloco.id_dispo}</a>
+                            <hr>
+                            `;
+                  });
+                } else {
+                  blocosHTML = '<p>Não há blocos cadastrados para este condomínio.</p>';
+                }
+
+                // Atualiza o conteúdo do card
+                document.querySelector('#condominio-info-content').innerHTML = `
+                        <p><strong>Nome:</strong> ${data.condominio.nome_condominio}</p>
+                        <p><strong>Cidade:</strong> ${data.condominio.cidade_condominio}</p>
+                        <p><strong>Estado:</strong> ${data.condominio.estado_condominio}</p>
+                        <p><strong>Rua:</strong> ${data.condominio.rua_condominio}</p>
+                        <p><strong>Número:</strong> ${data.condominio.num_condominio}</p>
+                        <p><strong>Quantidade de blocos:</strong> ${data.condominio.quantidade_blocos}</p>
+                        <p><strong>Nome do representante:</strong> ${data.condominio.nome_rep}</p>
+                        <p><strong>Email do representante:</strong> ${data.condominio.email_rep}</p>
+                        <p><strong>Contato do representante:</strong> ${data.condominio.telefone_rep}</p>
+                        <p><strong>Data de instalação prevista:</strong> ${data.condominio.data_instal}</p>
+                        ${blocosHTML} <!-- Adiciona a lista de blocos aqui -->
+                    `;
+
+                document.getElementById('info-card-condominio').classList.add('active');
+              } else {
+                document.querySelector('#condominio-info-content').innerHTML = `<p>Nenhuma informação encontrada para este condomínio.</p>`;
+                document.getElementById('info-card-condominio').classList.add('active');
+              }
+            })
+            .catch(err => {
+              console.error('Erro ao buscar informações do condomínio:', err);
+              alert('Erro ao carregar as informações do condomínio. Tente novamente.');
+            });
+        });
+
+        // Fechamento do card
+        const closeButton = document.getElementById('close-card-condominio');
+        const card = document.getElementById('info-card-condominio');
+
+        // Adiciona um evento de clique no botão de fechar
+        closeButton.addEventListener('click', function (event) {
+          event.preventDefault(); // Impede a navegação do link
+          card.classList.remove('active'); // Remove a classe 'active' para esconder o card
+        });
+      });
+    </script>
+
+    <script>
+      const bombexList = document.getElementById("bombex-list");
+      const bombexModal = document.getElementById("bombex-modal");
+
+      document.getElementById("add-bombex-btn").addEventListener("click", () => {
+        bombexModal.style.display = "block";
+      });
+
+      document.getElementById("close-bombex-btn").addEventListener("click", () => {
+        bombexModal.style.display = "none";
+      });
+
+      document.getElementById("save-bombex-btn").addEventListener("click", () => {
+        // Captura os valores do modal
+        const bloco = document.getElementById("bloco").value;
+        const caixasTerreo = parseFloat(document.getElementById("caixas-terreo").value);
+        const caixasCobertura = parseFloat(document.getElementById("caixas-cobertura").value);
+
+        console.log("Bloco:", bloco);
+        console.log("Caixas Térreo:", caixasTerreo);
+        console.log("Caixas Cobertura:", caixasCobertura);
+
+
+        if (bloco && !isNaN(caixasTerreo) && !isNaN(caixasCobertura) && status_b) {
+          // Cria um container para o novo bloco
+          const bombexItem = document.createElement("div");
+          bombexItem.classList.add("bombex-item");
+          bombexItem.style.border = "1px solid rgb(204, 204, 204)";
+          bombexItem.style.padding = "10px";
+          bombexItem.style.marginBottom = "10px";
+          bombexItem.style.borderRadius = "5px";
+          bombexItem.style.backgroundColor = "rgb(249, 249, 249)";
+
+          bombexItem.innerHTML = `
+      <label for="numero_bloco">Número do Bloco:</label>
+      <input  type="text" name="bombex_data[0][bloco]" value="${bloco}" readonly>
+      <label for="caixas_agua_terreo">Qte Caixas d'água térreo:</label>
+      <input type="number" name="bombex_data[0][caixasTerreo]" value="${caixasTerreo}" required>
+      <label for="caixas_agua_cobertura">Qte Caixas d'água cobertura:</label>
+      <input type="number" name="bombex_data[0][caixasCobertura]" value="${caixasCobertura}" required>
+      <label for="status_b">Status:</label>
+
+      <button type="button" class="remove-bombex-btn">Remover</button>
+    `;
+          bombexList.appendChild(bombexItem);
+
+          // Adiciona evento para remover o item
+          bombexItem.querySelector(".remove-bombex-btn").addEventListener("click", () => {
+            bombexList.removeChild(bombexItem);
+          });
+
+          // Fecha o modal
+          bombexModal.style.display = "none";
+
+          // Limpa os campos do modal
+          document.getElementById("bloco").value = "";
+          document.getElementById("caixas-terreo").value = "";
+          document.getElementById("caixas-cobertura").value = "";
+
+        } else {
+          alert("Preencha todos os campos corretamente. As caixas d'água devem ser números válidos.");
+        }
+      });
+
+    </script>
+
+    <script>
+      // Abertura do card (já está correto no seu código)
+      document.querySelectorAll('.open-parceiro-info').forEach(item => {
+        item.addEventListener('click', (event) => {
+          event.preventDefault(); // Evita o comportamento padrão do link
+          const parceiroId = item.getAttribute('data-id'); // Obtém o ID do condomínio
+
+          // Requisição AJAX para buscar as informações do condomínio
+          fetch(`/get-parceiro-info/${parceiroId}`)
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                // Atualiza o conteúdo do card com as informações do condomínio
+                document.querySelector('#parceiro-info-content').innerHTML = `
+              <p><strong>Nome:</strong> ${data.parceiro.nome}</p>
+              <p><strong>CNPJ:</strong> ${data.parceiro.cnpj}</p>
+              <p><strong>Telefone:</strong> ${data.parceiro.telefone}</p>
+              <p><strong>Email:</strong> ${data.parceiro.email}</p>
+            `;
+                document.getElementById('info-card-parceiro').classList.add('active'); // Mostra o card
+              } else {
+                // Caso não encontre o condomínio
+                document.querySelector('#parceiro-info-content').innerHTML = `
+            <p>Nenhuma informação encontrada para este condomínio.</p>
+          `;
+
+              }
+            })
+            .catch(err => {
+              console.error('Erro ao buscar informações do condomínio:', err);
+              alert('Erro ao carregar as informações do condomínio. Tente novamente.');
+            });
+        });
+      });
+
+      // Fechamento do card
+      const closeButtonpar = document.getElementById('close-card-parceiro');
+      const cardPar = document.getElementById('info-card-parceiro');
+
+      // Adiciona um evento de clique no botão de fechar
+      closeButtonpar.addEventListener('click', function (event) {
+        event.preventDefault(); // Impede a navegação do link
+        cardPar.classList.remove('active'); // Remove a classe 'active' para esconder o card
+      });
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("registroForm");
+
+        // Função para formatar telefone (com máscara)
+        function formatarTelefone(telefone) {
+          telefone = telefone.replace(/\D/g, ""); // Remove tudo que não for número
+          if (telefone.length <= 10) {
+            telefone = telefone.replace(/(\d{2})(\d{4})(\d{4})/, "($1) $2-$3");
+          } else {
+            telefone = telefone.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
+          }
+          return telefone;
+        }
+
+        // Função para formatar CNPJ (com máscara)
+        function formatarCNPJ(cnpj) {
+          cnpj = cnpj.replace(/\D/g, ""); // Remove tudo que não for número
+          if (cnpj.length <= 14) {
+            cnpj = cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
+          }
+          return cnpj;
+        }
+
+        // Máscaras de entrada para telefone e CNPJ
+        const telefone = document.getElementById("telefone_rep");
+        const cnpj = document.getElementById("cnpj_condominio");
+
+        telefone.addEventListener('input', function () {
+          telefone.value = formatarTelefone(telefone.value);
+        });
+
+        cnpj.addEventListener('input', function () {
+          cnpj.value = formatarCNPJ(cnpj.value);
+        });
+
+        form.addEventListener("submit", function (event) {
+          event.preventDefault();
+          let isValid = true;
+
+          // Selecionando os campos corretamente
+          const contrato = document.getElementById("contrato");
+          const condominio = document.getElementById("nome_condominio");
+          const cnpj = document.getElementById("cnpj_condominio");
+          const cidade = document.getElementById("cidade_condominio");
+          const estado = document.getElementById("estado_condominio");
+          const endereco = document.getElementById("rua_condominio");
+          const num = document.getElementById("num_condominio");
+          const representante = document.getElementById("nome_rep");
+          const email = document.getElementById("email_rep");
+          const telefone = document.getElementById("telefone_rep");
+          const quantidade = document.getElementById("quantidade_blocos");
+
+          // Função para exibir erro corretamente
+          function showError(input, message) {
+            let errorDiv = input.parentNode.querySelector(".invalid-feedback");
+            if (!errorDiv) {
+              errorDiv = document.createElement("div");
+              errorDiv.classList.add("invalid-feedback");
+              input.parentNode.appendChild(errorDiv);
+            }
+            input.classList.add("is-invalid");
+            errorDiv.textContent = message;
+          }
+
+          // Função para limpar erro corretamente
+          function clearError(input) {
+            input.classList.remove("is-invalid");
+            let errorDiv = input.parentNode.querySelector(".invalid-feedback");
+            if (errorDiv) {
+              errorDiv.remove();
+            }
+          }
+
+          // Validação do Contrato (PDF obrigatório)
+          if (contrato.files.length === 0) {
+            showError(contrato, "O contrato em PDF é obrigatório.");
+            isValid = false;
+          } else if (!contrato.files[0].name.endsWith(".pdf")) {
+            showError(contrato, "Apenas arquivos PDF são permitidos.");
+            isValid = false;
+          } else {
+            clearError(contrato);
+          }
+
+          // Validação do Condomínio
+          if (condominio.value.trim() === "") {
+            showError(condominio, "O nome do condomínio é obrigatório.");
+            isValid = false;
+          } else {
+            clearError(condominio);
+          }
+
+          // Validação do CNPJ (Formato correto)
+          function validarCNPJ(cnpj) {
+            const cnpjLimpo = cnpj.replace(/\D/g, "");
+            return /^\d{14}$/.test(cnpjLimpo);
+          }
+          if (!validarCNPJ(cnpj.value)) {
+            showError(cnpj, "CNPJ inválido! Deve conter 14 números.");
+            isValid = false;
+          } else {
+            clearError(cnpj);
+          }
+
+          // Validação da Cidade e Estado
+          if (cidade.value.trim() === "") {
+            showError(cidade, "A cidade do condomínio é obrigatória.");
+            isValid = false;
+          } else {
+            clearError(cidade);
+          }
+
+          if (estado.value.trim() === "" || estado.value.length !== 2) {
+            showError(estado, "O estado deve conter 2 letras (ex: SP, RJ).");
+            isValid = false;
+          } else {
+            clearError(estado);
+          }
+
+          // Validação do Endereço
+          if (endereco.value.trim() === "") {
+            showError(endereco, "O endereço do condomínio é obrigatório.");
+            isValid = false;
+          } else {
+            clearError(endereco);
+          }
+
+          if (num.value.trim() === "") {
+            showError(num, "O endereço do condomínio é obrigatório.");
+            isValid = false;
+          } else {
+            clearError(num);
+          }
+
+          // Validação do Representante
+          if (representante.value.trim() === "") {
+            showError(representante, "O nome do representante é obrigatório.");
+            isValid = false;
+          } else {
+            clearError(representante);
+          }
+
+          // Validação do Email
+          function validarEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+          }
+          if (!validarEmail(email.value)) {
+            showError(email, "Digite um email válido.");
+            isValid = false;
+          } else {
+            clearError(email);
+          }
+
+          // Validação do Telefone (Formato correto)
+          function validarTelefone(numero) {
+            const numeroLimpo = numero.replace(/\D/g, "");
+            return /^\d{10,11}$/.test(numeroLimpo);
+          }
+          if (!validarTelefone(telefone.value)) {
+            showError(telefone, "Digite um telefone válido (10 a 11 números).");
+            isValid = false;
+          } else {
+            clearError(telefone);
+          }
+
+          // Validação da Quantidade de BombeX (Apenas números)
+          function validarNumero(numero) {
+            return /^\d+$/.test(numero);
+          }
+          if (!validarNumero(quantidade.value) || quantidade.value <= 0) {
+            showError(quantidade, "Digite um número válido maior que zero.");
+            isValid = false;
+          } else {
+            clearError(quantidade);
+          }
+
+          // Se tudo estiver válido, envia o formulário
+          if (isValid) {
+            form.submit();
+          }
+        });
+      });
+    </script>
+    <script>
+      function limitarCaracteres(event, limite) {
+        const campo = event.target;
+        if (campo.value.length >= limite) {
+          event.preventDefault(); // Impede a digitação de mais caracteres
+        }
+      }
+    </script>
+    <script>
+      let quantidade_count = 0;
+
+
+      const add = document.getElementById('add-bombex-btn');
+      const salvar = document.getElementById('salvar_form');
+
+
+      add.addEventListener('click', function () {
+        const quantidade = document.getElementById('quantidade_blocos').value;
+        console.log('quantidade: ' + quantidade_count);
+
+
+
+        quantidade_count++;
+
+        if (quantidade == quantidade_count) {
+          salvar.disabled = false;
+        } else {
+          salvar.disabled = true;
+        }
+      });
+    </script>
+
+</body>
+
+</html>
